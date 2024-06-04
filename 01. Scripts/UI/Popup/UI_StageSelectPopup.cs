@@ -1,8 +1,6 @@
-using UnityEngine.UI;
-
 namespace DarkChocoSoft.RhythmCardGame.UI
 {
-    public class UI_Button : Button
+    public class UI_StageSelectPopup : UI_Popup
     {
 
     }
