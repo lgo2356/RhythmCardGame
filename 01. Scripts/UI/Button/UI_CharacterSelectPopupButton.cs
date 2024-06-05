@@ -1,5 +1,4 @@
 using DarkChocoSoft.RhythmCardGame.Manager;
-using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace DarkChocoSoft.RhythmCardGame.UI

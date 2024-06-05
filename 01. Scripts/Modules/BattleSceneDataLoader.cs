@@ -15,9 +15,8 @@ namespace DarkChocoSoft.RhythmCardGame.Module
                 throw new System.Exception("StageDataHolder is not found.");
             }
 
-            int stageNumber = dataHolder.Data.StageNumber;
-
-            Debug.Log($"Stage Number: {stageNumber}");
+            Debug.Log($"Stage Number: {dataHolder.Data.StageNumber}");
+            Debug.Log($"Character Type: {dataHolder.Data.CharacterType}");
         }
     }
 }

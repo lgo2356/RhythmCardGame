@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace DarkChocoSoft.Module
 {
@@ -27,6 +28,11 @@ namespace DarkChocoSoft.Module
         public void SetupName(string name)
         {
             gameObject.name = name;
+        }
+
+        public void RemoveDontDestroyOnLoad()
+        {
+            SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetActiveScene());
         }
 
         private static void SetupInstance()

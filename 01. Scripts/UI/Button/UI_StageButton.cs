@@ -19,7 +19,8 @@ namespace DarkChocoSoft.RhythmCardGame.UI
                 .AddComponent<StageDataHolder>();
             StageDataHolderData dataHolderData = new()
             {
-                StageNumber = m_StageNumber
+                StageNumber = m_StageNumber,
+                CharacterType = LobbySceneGameManager.Instance.SelectedCharacterType,
             };
             dataHolder.Data = dataHolderData;
 
