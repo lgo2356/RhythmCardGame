@@ -8,23 +8,9 @@ namespace DarkChocoSoft.RhythmCardGame.UI
     {
         public AssetReference CharacterSelectPopupAssetRef;
 
-        public UI_CharacterSelectPopup UI_CharacterSelectPopup;
-        public UI_StageSelectPopup UI_StageSelectPopup;
-        public UI_CharacterSelectPopupButton UI_CharacterSelectPopupButton;
-        public UI_StageSelectPopupButton UI_StageSelectPopupButton;
-
         private void Init()
         {
             PopupManager.Instance.LoadPopup(CharacterSelectPopupAssetRef, transform);
-
-
-            UI_CharacterSelectPopupButton.CharacterSelectPopup = UI_CharacterSelectPopup;
-
-
-
-            //UI_CharacterSelectPopupButton.StageSelectPopup = UI_StageSelectPopup;
-            //UI_StageSelectPopupButton.CharacterSelectPopup = UI_CharacterSelectPopup;
-            //UI_StageSelectPopupButton.StageSelectPopup = UI_StageSelectPopup;
         }
 
         private void Awake()

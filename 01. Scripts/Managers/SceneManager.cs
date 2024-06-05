@@ -21,8 +21,6 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         public void Load(SceneName sceneName)
         {
-
-
             switch (sceneName)
             {
                 case SceneName.MainScene:
@@ -65,7 +63,15 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         private void LoadBattleScene()
         {
+            string name = SceneName.BattleScene.ToString();
 
+            Addressables.InstantiateAsync(LOADING_SCREEN_PATH).Completed += (obj) =>
+            {
+                UI_LoadingScreen loadingScreen = obj.Result.GetComponent<UI_LoadingScreen>();
+                loadingScreen.SetLoadingImage();
+
+                StartCoroutine(LoadSceneAsyncCoroutine(name));
+            };
         }
 
         private IEnumerator LoadSceneAsyncCoroutine(string sceneName)
