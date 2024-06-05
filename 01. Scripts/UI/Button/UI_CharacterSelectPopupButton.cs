@@ -1,46 +1,64 @@
+using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace DarkChocoSoft.RhythmCardGame.UI
 {
     public class UI_CharacterSelectPopupButton : UI_Button
     {
         public UI_CharacterSelectPopup CharacterSelectPopup;
-        public UI_StageSelectPopup StageSelectPopup;
+        public Sprite NormalSprite;
+        public Sprite HighlightedSprite;
+        public Sprite SelectedSprite;
+        public bool IsSelected = false;
+
+        private Image m_Image;
 
         public override void OnPointerClick(PointerEventData eventData)
         {
-            base.OnPointerClick(eventData);
-
             if (CharacterSelectPopup.gameObject.activeSelf)
             {
                 CharacterSelectPopup.Hide();
+                IsSelected = false;
             }
             else
             {
                 CharacterSelectPopup.Show();
-                StageSelectPopup.Hide();
+                IsSelected = true;
             }
+
+            m_Image.sprite = IsSelected ? SelectedSprite : NormalSprite;
         }
 
-        public override void OnDeselect(BaseEventData eventData)
+        public override void OnPointerEnter(PointerEventData eventData)
         {
+            m_Image.sprite = HighlightedSprite;
+        }
 
+        public override void OnPointerExit(PointerEventData eventData)
+        {
+            m_Image.sprite = IsSelected ? SelectedSprite : NormalSprite;
         }
 
         private void OnCharacterPopupShow()
         {
-            base.OnSelect(null);
+            IsSelected = true;
+            m_Image.sprite = HighlightedSprite;
         }
 
         private void OnCharacterPopupHide()
         {
-            base.OnDeselect(null);
+            IsSelected = false;
+            m_Image.sprite = NormalSprite;
         }
 
-        protected override void Start()
+        private void Awake()
         {
-            base.Start();
+            m_Image = GetComponent<Image>();
+        }
 
+        private void Start()
+        {
             CharacterSelectPopup?.SetOnShowListener(OnCharacterPopupShow);
             CharacterSelectPopup?.SetOnHideListener(OnCharacterPopupHide);
         }
