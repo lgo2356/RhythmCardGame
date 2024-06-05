@@ -1,29 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace DarkChocoSoft.RhythmCardGame.UI
 {
-    public class UI_StageButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class UI_StageButton : UI_Button
     {
-        [SerializeField] private Button m_Button;
         [SerializeField] private int m_StageNumber;
 
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            Debug.Log("OnPointerEnter");
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            Debug.Log("OnPointerExit");
-        }
-
-        private void Start()
+        public override void OnPointerClick(PointerEventData eventData)
         {
             
+        }
+
+        public override void OnPointerEnter(PointerEventData eventData)
+        {
+            transform.DOScale(transform.localScale * 1.3f, 0.2f)
+                .SetEase(Ease.InOutSine)
+                .OnComplete(() => 
+                {
+                    transform.DOScale(transform.localScale / 1.2f, 0.2f)
+                        .SetEase(Ease.InOutSine);
+                });
+        }
+
+        public override void OnPointerExit(PointerEventData eventData)
+        {
+            transform.DOScale(1, 0.2f)
+                .SetEase(Ease.InOutSine);
+        }
+
+        protected override void Start()
+        {
+            base.Start();
         }
     }
 }

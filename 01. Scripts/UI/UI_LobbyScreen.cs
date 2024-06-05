@@ -1,9 +1,13 @@
+using DarkChocoSoft.RhythmCardGame.Manager;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace DarkChocoSoft.RhythmCardGame.UI
 {
     public class UI_LobbyScreen : MonoBehaviour
     {
+        public AssetReference CharacterSelectPopupAssetRef;
+
         public UI_CharacterSelectPopup UI_CharacterSelectPopup;
         public UI_StageSelectPopup UI_StageSelectPopup;
         public UI_CharacterSelectPopupButton UI_CharacterSelectPopupButton;
@@ -11,7 +15,13 @@ namespace DarkChocoSoft.RhythmCardGame.UI
 
         private void Init()
         {
+            PopupManager.Instance.LoadPopup(CharacterSelectPopupAssetRef, transform);
+
+
             UI_CharacterSelectPopupButton.CharacterSelectPopup = UI_CharacterSelectPopup;
+
+
+
             //UI_CharacterSelectPopupButton.StageSelectPopup = UI_StageSelectPopup;
             //UI_StageSelectPopupButton.CharacterSelectPopup = UI_CharacterSelectPopup;
             //UI_StageSelectPopupButton.StageSelectPopup = UI_StageSelectPopup;

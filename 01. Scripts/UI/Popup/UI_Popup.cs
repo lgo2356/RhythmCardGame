@@ -50,6 +50,11 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             OnHideAction?.Invoke();
         }
 
+        protected virtual void Awake()
+        {
+            gameObject.SetActive(false);
+        }
+
         protected virtual void OnDestroy()
         { 
             OnShowAction = null;

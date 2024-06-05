@@ -1,29 +1,23 @@
+using DarkChocoSoft.RhythmCardGame.Manager;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace DarkChocoSoft.RhythmCardGame.UI
 {
     public class UI_CharacterSelectPopupButton : UI_Button
     {
         public UI_CharacterSelectPopup CharacterSelectPopup;
-        public Sprite NormalSprite;
-        public Sprite HighlightedSprite;
-        public Sprite SelectedSprite;
-        public bool IsSelected = false;
-
-        private Image m_Image;
 
         public override void OnPointerClick(PointerEventData eventData)
         {
-            if (CharacterSelectPopup.gameObject.activeSelf)
+            if (PopupManager.Instance.IsShowing(PopupType.UI_CharacterSelectPopup))
             {
-                CharacterSelectPopup.Hide();
+                PopupManager.Instance.HidePopup(PopupType.UI_CharacterSelectPopup);
                 IsSelected = false;
             }
             else
             {
-                CharacterSelectPopup.Show();
+                PopupManager.Instance.ShowPopup(PopupType.UI_CharacterSelectPopup);
                 IsSelected = true;
             }
 
@@ -52,13 +46,10 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             m_Image.sprite = NormalSprite;
         }
 
-        private void Awake()
+        protected override void Start()
         {
-            m_Image = GetComponent<Image>();
-        }
+            base.Start();
 
-        private void Start()
-        {
             CharacterSelectPopup?.SetOnShowListener(OnCharacterPopupShow);
             CharacterSelectPopup?.SetOnHideListener(OnCharacterPopupHide);
         }
