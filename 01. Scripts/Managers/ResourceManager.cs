@@ -1,4 +1,5 @@
 using DarkChocoSoft.Module;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,15 +11,25 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
     {
         private Stack<GameObject> m_GameObjectPool = new();
 
-        //public GameObject InstantiateAsync(string path)
-        //{
-        //    Addressables.InstantiateAsync<GameObject>(path).Completed += (obj) =>
-        //    {
-        //        m_GameObjectPool.Push(obj.Result);
+        public void InstantiateAsync(string path, Transform parent, Action < GameObject> callback)
+        {
+            Addressables.InstantiateAsync(path, parent).Completed += (obj) =>
+            {
+                m_GameObjectPool.Push(obj.Result);
 
-        //        return obj.Result;
-        //    };
-        //}
+                callback?.Invoke(obj.Result);
+            };
+        }
+
+        public void InstantiateAsync(AssetReference assetRef, Transform parent, Action<GameObject> callback)
+        {
+            Addressables.InstantiateAsync(assetRef, parent).Completed += (obj) =>
+            {
+                m_GameObjectPool.Push(obj.Result);
+
+                callback?.Invoke(obj.Result);
+            };
+        }
 
         //public void LoadSpriteAsync(string path)
         //{
