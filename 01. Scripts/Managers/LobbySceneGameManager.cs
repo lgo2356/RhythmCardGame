@@ -1,5 +1,5 @@
 using DarkChocoSoft.Module;
-using DarkChocoSoft.RhythmCardGame.Data;
+using DarkChocoSoft.RhythmCardGame.Const;
 using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Manager
@@ -23,7 +23,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             PopupManager.Instance.UnloadAllPopup();
         }
 
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
 

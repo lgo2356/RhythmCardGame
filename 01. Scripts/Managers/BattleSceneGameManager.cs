@@ -1,8 +1,5 @@
 using DarkChocoSoft.Module;
-using DarkChocoSoft.RhythmCardGame.Data;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using DarkChocoSoft.RhythmCardGame.Const;
 
 public class BattleSceneGameManager : Singleton<BattleSceneGameManager>
 {
@@ -11,7 +8,7 @@ public class BattleSceneGameManager : Singleton<BattleSceneGameManager>
     public int StageNumber;
     public CharacterType SelectedCharacterType;
 
-    public override void Awake()
+    protected override void Awake()
     {
         base.Awake();
 

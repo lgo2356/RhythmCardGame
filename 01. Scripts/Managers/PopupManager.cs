@@ -122,7 +122,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             return m_ShowingPopupsDic.ContainsKey(popup);
         }
 
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
 

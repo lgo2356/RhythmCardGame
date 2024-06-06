@@ -54,13 +54,25 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             m_GameObjectPool.Clear();
         }
 
-        //public void LoadSpriteAsync(string path)
-        //{
-        //    Addressables.LoadAssetAsync<Sprite>(path).Completed += (obj) =>
-        //    {
+        public void LoadAsync<T>(string path, Action<T> callback)
+        {
+            Addressables.LoadAssetAsync<T>(path).Completed += (obj) =>
+            {
+                T result = obj.Result;
 
-        //    };
-        //}
+                callback?.Invoke(result);
+            };
+        }
+
+        public void LoadAsset<T>(AssetReference assetRef, Action<T> callback)
+        {
+            Addressables.LoadAssetAsync<T>(assetRef).Completed += (obj) =>
+            {
+                T result = obj.Result;
+
+                callback?.Invoke(result);
+            };
+        }
 
         private IEnumerator InitAddressableCoroutine()
         {

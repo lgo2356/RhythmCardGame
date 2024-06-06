@@ -76,8 +76,6 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         private IEnumerator LoadSceneAsyncCoroutine(string sceneName)
         {
-            yield return new WaitForSeconds(3);
-
             AsyncOperation asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName);
 
             while (!asyncOperation.isDone)
@@ -88,7 +86,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             Destroy(gameObject);
         }
 
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
 

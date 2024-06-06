@@ -66,7 +66,7 @@ namespace DarkChocoSoft.Module
             }
         }
 
-        public virtual void Awake()
+        protected virtual void Awake()
         {
             RemoveDuplicate();
         }
