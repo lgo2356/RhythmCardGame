@@ -9,13 +9,13 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 {
     public class ResourceManager : Singleton<ResourceManager>
     {
-        private Stack<GameObject> m_GameObjectPool = new();
+        private List<GameObject> m_GameObjectPool = new();
 
         public void InstantiateAsync(string path, Transform parent, Action < GameObject> callback)
         {
             Addressables.InstantiateAsync(path, parent).Completed += (obj) =>
             {
-                m_GameObjectPool.Push(obj.Result);
+                m_GameObjectPool.Add(obj.Result);
 
                 callback?.Invoke(obj.Result);
             };
@@ -25,10 +25,33 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         {
             Addressables.InstantiateAsync(assetRef, parent).Completed += (obj) =>
             {
-                m_GameObjectPool.Push(obj.Result);
+                m_GameObjectPool.Add(obj.Result);
 
                 callback?.Invoke(obj.Result);
             };
+        }
+
+        public void ReleaseGameObject(GameObject go)
+        {
+            if (m_GameObjectPool.Contains(go))
+            {
+                Addressables.Release(go);
+
+                m_GameObjectPool.Remove(go);
+            }
+        }
+
+        public void ReleaseAllGameObject()
+        {
+            if (m_GameObjectPool.Count <= 0)
+                return;
+
+            foreach (var go in m_GameObjectPool)
+            {
+                Addressables.Release(go);
+            }
+
+            m_GameObjectPool.Clear();
         }
 
         //public void LoadSpriteAsync(string path)

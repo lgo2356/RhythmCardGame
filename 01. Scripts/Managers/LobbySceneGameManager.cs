@@ -1,5 +1,6 @@
 using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Data;
+using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Manager
 {
@@ -7,7 +8,20 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
     {
         private const string MANAGER_NAME = "[ LobbySceneGameManager ]";
 
+        public int SelectedStageNumber = -1;
         public CharacterType SelectedCharacterType = CharacterType.Slime;
+
+        public void SaveData()
+        {
+            PlayerPrefs.SetInt("StageNumber", SelectedStageNumber);
+            PlayerPrefs.SetString("CharacterType", SelectedCharacterType.ToString());
+            PlayerPrefs.Save();
+        }
+
+        public void ReleaseAllReference()
+        {
+            PopupManager.Instance.UnloadAllPopup();
+        }
 
         public override void Awake()
         {
@@ -19,6 +33,11 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         private void Start()
         {
             RemoveDontDestroyOnLoad();
+        }
+
+        private void OnDestroy()
+        {
+            ReleaseAllReference();
         }
     }
 }

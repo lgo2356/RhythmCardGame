@@ -13,9 +13,9 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         {
             base.OnPointerClick(eventData);
 
-            PlayerPrefs.SetInt("StageNumber", m_StageNumber);
-            PlayerPrefs.SetString("CharacterType", LobbySceneGameManager.Instance.SelectedCharacterType.ToString());
-            PlayerPrefs.Save();
+            LobbySceneGameManager.Instance.SelectedStageNumber = m_StageNumber;
+            LobbySceneGameManager.Instance.SaveData();
+            LobbySceneGameManager.Instance.ReleaseAllReference();
 
             SceneManager.Instance.Load(SceneName.BattleScene);
         }

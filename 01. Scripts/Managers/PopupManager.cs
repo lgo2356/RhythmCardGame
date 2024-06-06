@@ -59,6 +59,26 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             });
         }
 
+        public void UnloadPopup(PopupType popupType)
+        {
+            if (LoadedPopups.ContainsKey(popupType))
+            {
+                ResourceManager.Instance.ReleaseGameObject(LoadedPopups[popupType].gameObject);
+
+                LoadedPopups.Remove(popupType);
+            }
+        }
+
+        public void UnloadAllPopup()
+        {
+            foreach (var popupType in LoadedPopups)
+            {
+                ResourceManager.Instance.ReleaseGameObject(popupType.Value.gameObject);
+            }
+
+            LoadedPopups.Clear();
+        }
+
         public void ShowPopup(PopupType popupType)
         {
             UI_Popup uiPopup = LoadedPopups[popupType];
