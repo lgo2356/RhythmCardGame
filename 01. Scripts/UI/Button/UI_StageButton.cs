@@ -1,6 +1,4 @@
-using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Manager;
-using DarkChocoSoft.RhythmCardGame.Module;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,14 +13,9 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         {
             base.OnPointerClick(eventData);
 
-            StageDataHolder dataHolder = new GameObject()
-                .AddComponent<StageDataHolder>();
-            StageDataHolderData dataHolderData = new()
-            {
-                StageNumber = m_StageNumber,
-                CharacterType = LobbySceneGameManager.Instance.SelectedCharacterType,
-            };
-            dataHolder.Data = dataHolderData;
+            PlayerPrefs.SetInt("StageNumber", m_StageNumber);
+            PlayerPrefs.SetString("CharacterType", LobbySceneGameManager.Instance.SelectedCharacterType.ToString());
+            PlayerPrefs.Save();
 
             SceneManager.Instance.Load(SceneName.BattleScene);
         }

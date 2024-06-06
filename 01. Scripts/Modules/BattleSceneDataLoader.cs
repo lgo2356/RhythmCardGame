@@ -8,15 +8,11 @@ namespace DarkChocoSoft.RhythmCardGame.Module
         {
             base.Start();
 
-            StageDataHolder dataHolder = FindObjectOfType<StageDataHolder>();
+            int stageNumber = PlayerPrefs.GetInt("StageNumber", -1);
+            string characterType = PlayerPrefs.GetString("CharacterType", string.Empty);
 
-            if (dataHolder == null)
-            {
-                throw new System.Exception("StageDataHolder is not found.");
-            }
-
-            Debug.Log($"Stage Number: {dataHolder.Data.StageNumber}");
-            Debug.Log($"Character Type: {dataHolder.Data.CharacterType}");
+            Debug.Log($"Stage Number: {stageNumber}");
+            Debug.Log($"Character Type: {characterType}");
         }
     }
 }
