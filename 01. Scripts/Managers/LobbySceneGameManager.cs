@@ -27,7 +27,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         {
             base.Awake();
 
-            SetupName(MANAGER_NAME);
+            SetGameObjectName(MANAGER_NAME);
         }
 
         protected override void Start()

@@ -1,3 +1,4 @@
+using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Manager;
 using DG.Tweening;
 using TMPro;

@@ -25,7 +25,7 @@ namespace DarkChocoSoft.Module
             }
         }
 
-        public void SetupName(string name)
+        public void SetGameObjectName(string name)
         {
             gameObject.name = name;
         }

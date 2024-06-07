@@ -13,4 +13,12 @@ namespace DarkChocoSoft.RhythmCardGame.Const
         Slime,
         Cat,
     }
+
+    public enum RhythmCardType
+    {
+        Single = 0,
+        Double = 1,
+        Triple = 2,
+        Long = 3,
+    }
 }
