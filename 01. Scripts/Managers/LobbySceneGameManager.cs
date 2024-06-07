@@ -30,7 +30,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             SetupName(MANAGER_NAME);
         }
 
-        private void Start()
+        protected override void Start()
         {
             RemoveDontDestroyOnLoad();
         }

@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class Utils
 {
+    public static T GetOrAddComponent<T>(GameObject gameObject) where T : Component
+    {
+        T component = gameObject.GetComponent<T>();
+
+        if (component == null)
+        {
+            component = gameObject.AddComponent<T>();
+        }
+
+        return component;
+    }
+
     public static T FindChild<T>(GameObject parent, string name = null, bool recursive = false) where T : UnityEngine.Object
     {
         if (parent == null)

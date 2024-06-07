@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73cb392c30a64e14294ce2277acb9228, type: 3}
-  m_Name: SingleRhythmCardConfig
+  m_Name: TripleRhythmCardConfig
   m_EditorClassIdentifier: 
   FrameSprite: {fileID: 21300000, guid: bf2b31ceb6a9bab4d93edffe34b2eae6, type: 3}
   CardSprite: {fileID: 21300000, guid: 7d1b8c1a026022641af7b846a3d34c63, type: 3}
   BackgroundColor: {r: 0.30588236, g: 0.3764706, b: 0.25490198, a: 1}
-  NoteCount: 1
+  NoteCount: 3

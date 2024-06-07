@@ -70,5 +70,9 @@ namespace DarkChocoSoft.Module
         {
             RemoveDuplicate();
         }
+
+        protected virtual void Start()
+        {
+        }
     }
 }

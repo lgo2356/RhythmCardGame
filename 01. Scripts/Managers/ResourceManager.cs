@@ -31,6 +31,14 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             };
         }
 
+        public GameObject InstantiateSync(string path, Transform parent)
+        {
+            var handle = Addressables.InstantiateAsync(path, parent);
+            handle.WaitForCompletion();
+
+            return handle.Result;
+        }
+
         public void ReleaseGameObject(GameObject go)
         {
             if (m_GameObjectPool.Contains(go))
@@ -64,8 +72,14 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             };
         }
 
-        public void LoadAsset<T>(AssetReference assetRef, Action<T> callback)
+        public void LoadAsync<T>(AssetReference assetRef, Action<T> callback)
         {
+            if (assetRef == null)
+            {
+                Debug.LogError("AssetReference is null");
+                return;
+            }
+
             Addressables.LoadAssetAsync<T>(assetRef).Completed += (obj) =>
             {
                 T result = obj.Result;

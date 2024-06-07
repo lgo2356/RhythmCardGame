@@ -1,4 +1,5 @@
 using DarkChocoSoft.RhythmCardGame.Const;
+using DarkChocoSoft.RhythmCardGame.Manager;
 using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Module

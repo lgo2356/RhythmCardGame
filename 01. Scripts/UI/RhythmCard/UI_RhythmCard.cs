@@ -1,22 +1,19 @@
 using DarkChocoSoft.RhythmCardGame.Manager;
 using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace DarkChocoSoft.RhythmCardGame.UI
 {
-    public class UI_RhythmCard : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+    public class UI_RhythmCard : MonoBehaviour, IProduct, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] protected AssetReference ConfigAssetRef;
-
         protected Image m_BackgroundImage;
         protected Image m_FrameImage;
         protected Image m_CardImage;
         protected Tween m_CurTween;
+        protected TextMeshProUGUI m_NoteCountText;
         protected RhythmCardConfig m_Config;
 
         public virtual void OnPointerClick(PointerEventData eventData)
@@ -51,9 +48,9 @@ namespace DarkChocoSoft.RhythmCardGame.UI
                 .SetEase(Ease.InOutSine);
         }
 
-        private void LoadConfig()
+        public void LoadConfig(string path)
         {
-            ResourceManager.Instance.LoadAsset<RhythmCardConfig>(ConfigAssetRef, (config) =>
+            ResourceManager.Instance.LoadAsync<RhythmCardConfig>(path, (config) =>
             {
                 m_Config = config;
 
@@ -65,6 +62,15 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         {
             m_BackgroundImage.color = config.BackgroundColor;
             m_CardImage.sprite = config.CardSprite;
+
+            if (config.NoteCount == 99)
+            {
+                m_NoteCountText.text = "Long";
+            }
+            else
+            {
+                m_NoteCountText.text = config.NoteCount.ToString();
+            }
         }
 
         protected virtual void Awake()
@@ -72,11 +78,12 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             m_BackgroundImage = Utils.FindChild<Image>(gameObject, "Background");
             m_FrameImage = Utils.FindChild<Image>(gameObject, "Frame");
             m_CardImage = Utils.FindChild<Image>(gameObject, "Image");
+            m_NoteCountText = Utils.FindChild<TextMeshProUGUI>(gameObject, "Text");
         }
 
         protected virtual void Start()
         {
-            LoadConfig();
+            
         }
     }
 }
