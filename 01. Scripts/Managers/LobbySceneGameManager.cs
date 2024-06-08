@@ -8,8 +8,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
     {
         private const string MANAGER_NAME = "[ LobbySceneGameManager ]";
 
-        public int SelectedStageNumber = -1;
-        public CharacterType SelectedCharacterType = CharacterType.Slime;
+        public int SelectedStageNumber { get; set; } = -1;
+        public CharacterType SelectedCharacterType { get; set; } = CharacterType.Slime;
 
         public void SaveData()
         {

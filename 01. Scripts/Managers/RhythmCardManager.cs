@@ -25,12 +25,19 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 {
                     RhythmCardType cardType = m_CardDeck.DequeueFront();
                     IProduct product = m_CardFactories[(int)cardType].GetProduct(Vector2.zero, m_CardPanel.transform);
+                    //IProduct product = m_CardFactories[0].GetProduct(Vector2.zero, m_CardPanel.transform);
                 }
                 catch (DequeEmptyException)
                 {
+                    //TODO: 뽑을 카드가 없으면 GameOver 처리
                     Debug.LogError("뽑을 카드가 없습니다.");
                 }
             }
+        }
+
+        public bool IsRead
+        {
+            get; private set;
         }
 
         private void InitManager()
@@ -43,15 +50,15 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         {
             m_CardFactories = new Factory[4];
 
-            m_CardFactories[0] = Utils.GetOrAddComponent<SingleRhythmCardFactory>(gameObject);
-            m_CardFactories[1] = Utils.GetOrAddComponent<DoubleRhythmCardFactory>(gameObject);
-            m_CardFactories[2] = Utils.GetOrAddComponent<TripleRhythmCardFactory>(gameObject);
-            m_CardFactories[3] = Utils.GetOrAddComponent<LongRhythmCardFactory>(gameObject);
+            m_CardFactories[0] = gameObject.GetOrAddComponent<SingleRhythmCardFactory>();
+            m_CardFactories[1] = gameObject.GetOrAddComponent<DoubleRhythmCardFactory>();
+            m_CardFactories[2] = gameObject.GetOrAddComponent<TripleRhythmCardFactory>();
+            m_CardFactories[3] = gameObject.GetOrAddComponent<LongRhythmCardFactory>();
         }
 
         private void InitCardDeck()
         {
-            m_CardDeck = GenerateCardDeck(1);
+            m_CardDeck = GenerateCardDeck(40);
         }
 
         private Deque<RhythmCardType> GenerateCardDeck(int count)
@@ -79,11 +86,6 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
             InitCardFactory();
             InitCardDeck();
-        }
-
-        protected override void Start()
-        {
-            
         }
 
         // 카드 타입 검색해서 드로우하기 (구현 예정)

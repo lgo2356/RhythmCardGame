@@ -1,4 +1,6 @@
+using DarkChocoSoft.RhythmCardGame.Const;
 using DarkChocoSoft.RhythmCardGame.Manager;
+using DarkChocoSoft.RhythmCardGame.Module;
 using TMPro;
 using UnityEngine;
 
@@ -28,7 +30,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         {
             if (isLogin)
             {
-                SceneManager.Instance.Load(SceneName.LobbyScene);
+                LobbySceneLoader.Instance.Load(SceneName.LobbyScene);
             }
         }
 

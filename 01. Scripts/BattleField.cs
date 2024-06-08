@@ -1,7 +1,5 @@
-using DarkChocoSoft.RhythmCardGame.Manager;
 using DarkChocoSoft.RhythmCardGame.Const;
-using System.Collections;
-using System.Collections.Generic;
+using DarkChocoSoft.RhythmCardGame.Manager;
 using UnityEngine;
 
 public class BattleField : MonoBehaviour

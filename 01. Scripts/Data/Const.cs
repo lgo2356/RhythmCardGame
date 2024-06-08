@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace DarkChocoSoft.RhythmCardGame.Const
 {
     /**
@@ -20,5 +16,17 @@ namespace DarkChocoSoft.RhythmCardGame.Const
         Double = 1,
         Triple = 2,
         Long = 3,
+    }
+
+    public enum SceneName
+    {
+        MainScene,
+        LobbyScene,
+        BattleScene,
+    }
+
+    public static class AssetPath
+    {
+        public const string LOADING_SCREEN_PATH = "Assets/04. Prefabs/UI/UI_LoadingScreen.prefab";
     }
 }
