@@ -88,6 +88,14 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             };
         }
 
+        public T LoadSync<T>(string path)
+        {
+            var handle = Addressables.LoadAssetAsync<T>(path);
+            handle.WaitForCompletion();
+
+            return handle.Result;
+        }
+
         private IEnumerator InitAddressableCoroutine()
         {
             var init = Addressables.InitializeAsync();

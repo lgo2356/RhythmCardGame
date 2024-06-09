@@ -1,4 +1,6 @@
+using DarkChocoSoft.RhythmCardGame.Const;
 using DarkChocoSoft.RhythmCardGame.Manager;
+using DarkChocoSoft.RhythmCardGame.Module;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,7 +19,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             LobbySceneGameManager.Instance.SaveData();
             LobbySceneGameManager.Instance.ReleaseAllReference();
 
-            SceneManager.Instance.Load(SceneName.BattleScene);
+            BattleSceneLoader.Instance.Load(SceneName.BattleScene);
         }
 
         public override void OnPointerEnter(PointerEventData eventData)

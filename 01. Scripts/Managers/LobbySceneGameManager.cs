@@ -8,13 +8,14 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
     {
         private const string MANAGER_NAME = "[ LobbySceneGameManager ]";
 
-        public int SelectedStageNumber = -1;
-        public CharacterType SelectedCharacterType = CharacterType.Slime;
+        public int SelectedStageNumber { get; set; } = -1;
+        public CharacterName SelectedCharacterType { get; set; } = CharacterName.Slime;
 
         public void SaveData()
         {
-            PlayerPrefs.SetInt("StageNumber", SelectedStageNumber);
-            PlayerPrefs.SetString("CharacterType", SelectedCharacterType.ToString());
+            PlayerPrefs.SetInt(PlayerPrefsKey.StageNumber, SelectedStageNumber);
+            PlayerPrefs.SetString(PlayerPrefsKey.PlayerCharacterName, SelectedCharacterType.ToString());
+            PlayerPrefs.SetString(PlayerPrefsKey.MonsterCharacterName, CharacterName.Cat.ToString());
             PlayerPrefs.Save();
         }
 
@@ -27,7 +28,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         {
             base.Awake();
 
-            SetupName(MANAGER_NAME);
+            SetGameObjectName(MANAGER_NAME);
         }
 
         protected override void Start()

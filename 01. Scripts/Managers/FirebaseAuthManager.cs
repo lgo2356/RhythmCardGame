@@ -108,7 +108,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         {
             base.Awake();
 
-            SetupName(MANAGER_NAME);
+            SetGameObjectName(MANAGER_NAME);
 
             Init();
         }
