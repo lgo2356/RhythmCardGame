@@ -10,19 +10,32 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
     {
         private const string MANAGER_NAME = "[ CharacterManager ]";
 
-        private GameObject m_BattleField;
         private Factory[] m_CharacterFactories;
+        private GameObject m_BattleField;
+
+        public GameObject BattleField
+        {
+            get
+            {
+                if (m_BattleField == null)
+                {
+                    m_BattleField = GameObject.Find("BattleField");
+                }
+
+                return m_BattleField;
+            }
+        }
 
         public void SpawnPlayerCharacter()
         {
             CharacterName characterType = BattleSceneGameManager.Instance.SceneData.PlayerCharacterType;
-            IProduct product = m_CharacterFactories[(int)characterType].GetProduct(Vector2.zero, m_BattleField.transform);
+            IProduct product = m_CharacterFactories[(int)characterType].GetProduct(Vector2.zero, BattleField.transform);
         }
 
         public void SpawnMonsterCharacter()
         {
             CharacterName characterType = BattleSceneGameManager.Instance.SceneData.MonsterCharacterType;
-            IProduct product = m_CharacterFactories[(int)characterType].GetProduct(Vector2.zero, m_BattleField.transform);
+            IProduct product = m_CharacterFactories[(int)characterType].GetProduct(Vector2.zero, BattleField.transform);
         }
 
         private void InitManager()
@@ -45,8 +58,6 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
             InitManager();
             InitCharacterFactory();
-
-            m_BattleField = GameObject.Find("BattleField");
         }
     }
 }

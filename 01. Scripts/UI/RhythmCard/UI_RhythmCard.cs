@@ -16,10 +16,21 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         protected Tween m_CurTween;
         protected TextMeshProUGUI m_NoteCountText;
         protected RhythmCardConfig m_Config;
+        protected float m_CardScale = 1f;
+        protected bool m_IsSelected = false;
 
         public virtual void OnPointerClick(PointerEventData eventData)
         {
-            
+            m_IsSelected = !m_IsSelected;
+
+            if (m_IsSelected)
+            {
+                m_CardScale = 1.1f;
+            }
+            else 
+            { 
+                m_CardScale = 1f;
+            }
         }
 
         public virtual void OnPointerEnter(PointerEventData eventData)
@@ -45,7 +56,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
                 m_CurTween.Kill();
             }
 
-            m_CurTween = transform.DOScale(1, 0.2f)
+            m_CurTween = transform.DOScale(m_CardScale, 0.2f)
                 .SetEase(Ease.InOutSine);
         }
 
