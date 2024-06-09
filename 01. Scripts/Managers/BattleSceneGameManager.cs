@@ -26,6 +26,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         protected override void Start()
         {
+            CharacterManager.Instance.SpawnPlayerCharacter();
+            CharacterManager.Instance.SpawnMonsterCharacter();
             RhythmCardManager.Instance.DrawCard(5);
         }
     }

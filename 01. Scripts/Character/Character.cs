@@ -1,7 +1,6 @@
 using DarkChocoSoft.RhythmCardGame.Const;
+using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Manager;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,13 +8,14 @@ public abstract class Character : MonoBehaviour, IProduct
 {
     [SerializeField] protected Sprite CharacterSprite;
 
-    private Image m_CharacterImage;
+    protected Image m_CharacterImage;
 
-    public void Load(CharacterType characterType)
+    public abstract void Load();
+    public void Load(CharacterName characterType)
     {
         switch (characterType)
         {
-            case CharacterType.Slime:
+            case CharacterName.Slime:
                 {
                     string path = "Assets/Bolt 2D JellyFarm VE2/Sprites/InGame/Jelly 0.png";
 
@@ -26,7 +26,7 @@ public abstract class Character : MonoBehaviour, IProduct
                 }
                 break;
 
-            case CharacterType.Cat:
+            case CharacterName.Cat:
                 {
                     string path = "Assets/Bolt 2D JellyFarm VE2/Sprites/InGame/Jelly 6.png";
 
@@ -37,6 +37,20 @@ public abstract class Character : MonoBehaviour, IProduct
                 }
                 break;
         }
+    }
+
+    public void LoadConfig(string path)
+    {
+        ResourceManager.Instance.LoadAsync<CharacterConfig>(path, (config) =>
+        {
+            ApplyConfig(config);
+        });
+    }
+
+    private void ApplyConfig(CharacterConfig config)
+    {
+        CharacterSprite = config.CharacterSprite;
+        m_CharacterImage.sprite = CharacterSprite;
     }
 
     protected virtual void Awake()

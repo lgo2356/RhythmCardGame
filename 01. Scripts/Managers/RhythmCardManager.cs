@@ -48,7 +48,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         private void InitCardFactory()
         {
-            m_CardFactories = new Factory[4];
+            m_CardFactories = new Factory[Enum.GetValues(typeof(RhythmCardType)).Length];
 
             m_CardFactories[0] = gameObject.GetOrAddComponent<SingleRhythmCardFactory>();
             m_CardFactories[1] = gameObject.GetOrAddComponent<DoubleRhythmCardFactory>();
@@ -81,11 +81,10 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             base.Awake();
 
             InitManager();
-
-            m_CardPanel = GameObject.Find("CardPanel");
-
             InitCardFactory();
             InitCardDeck();
+
+            m_CardPanel = GameObject.Find("CardPanel");
         }
 
         // 카드 타입 검색해서 드로우하기 (구현 예정)

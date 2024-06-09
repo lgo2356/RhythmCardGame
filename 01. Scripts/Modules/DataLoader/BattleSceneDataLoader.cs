@@ -8,7 +8,7 @@ namespace DarkChocoSoft.RhythmCardGame.Module
     public class BattleSceneDataLoader : DataLoader
     {
         private Stack<string> m_Paths = new();
-        private Action<GameObject> m_OnCompleteAction;
+        private Action<string, GameObject> m_OnCompleteAction;
 
         public BattleSceneDataLoader Add(string path)
         {
@@ -16,7 +16,7 @@ namespace DarkChocoSoft.RhythmCardGame.Module
             return this;
         }
 
-        public BattleSceneDataLoader OnComplete(Action<GameObject> callback)
+        public BattleSceneDataLoader OnComplete(Action<string, GameObject> callback)
         {
             m_OnCompleteAction = callback;
             return this;
@@ -24,11 +24,11 @@ namespace DarkChocoSoft.RhythmCardGame.Module
 
         public void Load()
         {
-            while (m_Paths.TryPop(out string path))
+            while (m_Paths.TryPop(out var path))
             {
                 ResourceManager.Instance.LoadAsync<GameObject>(path, (obj) =>
                 {
-                    m_OnCompleteAction?.Invoke(obj);
+                    m_OnCompleteAction?.Invoke(obj.name, obj);
                 });
             }
         }
