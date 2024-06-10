@@ -1,6 +1,7 @@
 using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
 using DarkChocoSoft.RhythmCardGame.Interface;
+using DarkChocoSoft.RhythmCardGame.Manager;
 using DarkChocoSoft.RhythmCardGame.UI;
 using System;
 using System.Collections;
@@ -44,18 +45,15 @@ namespace DarkChocoSoft.RhythmCardGame.Module
                     PlayerPrefs.GetString(PlayerPrefsKey.MonsterCharacterName, string.Empty)),
             };
 
-            Debug.Log($"Stage Number: {m_BattleSceneData.StageNumber}");
-            Debug.Log($"Selected Character: {m_BattleSceneData.PlayerCharacterType}");
-
             BattleSceneDataLoader dataLoader = new();
             dataLoader
                 .Add("Assets/04. Prefabs/Character/PlayerCharacter.prefab")
                 .Add("Assets/04. Prefabs/Character/MonsterCharacter.prefab")
                 .Add("Assets/04. Prefabs/UI_RhythmCard.prefab")
+                .Add("Assets/04. Prefabs/RhythmNote.prefab")
+                .Add("Assets/04. Prefabs/RhythmPivot.prefab")
                 .OnComplete((type, asset) =>
                 {
-                    Debug.Log($"Asset type : {type}");
-
                     switch (type)
                     {
                         case "PlayerCharacter":
@@ -69,11 +67,17 @@ namespace DarkChocoSoft.RhythmCardGame.Module
                         case "UI_RhythmCard":
                             m_BattleSceneData.RhythmCardPrefab = asset;
                             break;
+
+                        case "RhythmNote":
+                            m_BattleSceneData.RhythmNotePrefab = asset;
+                            break;
+
+                        case "RhythmPivot":
+                            m_BattleSceneData.RhythmPivotPrefab = asset;
+                            break;
                     }
 
                     asyncOperation.allowSceneActivation = true;
-
-                    Debug.Log($"Task1 complete");
                 })
                 .Load();
 
@@ -91,16 +95,5 @@ namespace DarkChocoSoft.RhythmCardGame.Module
 
             SetGameObjectName(MANAGER_NAME);
         }
-    }
-
-    public struct BattleSceneData
-    {
-        public int StageNumber;
-        public CharacterName PlayerCharacterType;
-        public CharacterName MonsterCharacterType;
-
-        public GameObject RhythmCardPrefab;
-        public GameObject PlayerCharacterPrefab;
-        public GameObject MonsterCharacterPrefab;
     }
 }

@@ -17,6 +17,19 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         private Factory[] m_CardFactories;
         private Deque<RhythmCardType> m_CardDeck;
 
+        public GameObject CardPanel
+        {
+            get
+            {
+                if (m_CardPanel == null)
+                {
+                    m_CardPanel = GameObject.Find("CardPanel");
+                }
+
+                return m_CardPanel;
+            }
+        }
+
         public void DrawCard(int count = 1)
         {
             for (int i = 0; i < count; i++)
@@ -24,8 +37,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 try
                 {
                     RhythmCardType cardType = m_CardDeck.DequeueFront();
-                    IProduct product = m_CardFactories[(int)cardType].GetProduct(Vector2.zero, m_CardPanel.transform);
-                    //IProduct product = m_CardFactories[0].GetProduct(Vector2.zero, m_CardPanel.transform);
+                    IProduct product = m_CardFactories[(int)cardType].GetProduct(Vector2.zero, CardPanel.transform);
+                    //IProduct product = m_CardFactories[0].GetProduct(Vector2.zero, CardPanel.transform);
                 }
                 catch (DequeEmptyException)
                 {
@@ -83,8 +96,6 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             InitManager();
             InitCardFactory();
             InitCardDeck();
-
-            m_CardPanel = GameObject.Find("CardPanel");
         }
 
         // 카드 타입 검색해서 드로우하기 (구현 예정)

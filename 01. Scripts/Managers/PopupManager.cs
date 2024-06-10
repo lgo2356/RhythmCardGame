@@ -12,7 +12,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
      */
     public enum PopupType
     {
-        UI_CharacterSelectPopup,
+        UI_CharacterSelectPopup, UI_RhythmPopup,
     }
 
     public class PopupManager : Singleton<PopupManager>
@@ -115,6 +115,18 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
 
             m_ShowingPopupsDic.Clear();
+        }
+
+        public UI_Popup GetPopup<T>() where T : UI_Popup
+        {
+            PopupType popupType = (PopupType)Enum.Parse(typeof(PopupType), typeof(T).Name);
+
+            if (m_ShowingPopupsDic.ContainsKey(popupType))
+            {
+                return m_ShowingPopupsDic[popupType];
+            }
+
+            return null;
         }
 
         public bool IsShowing(PopupType popup)

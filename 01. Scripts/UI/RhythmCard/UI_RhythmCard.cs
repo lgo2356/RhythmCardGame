@@ -10,16 +10,29 @@ namespace DarkChocoSoft.RhythmCardGame.UI
 {
     public class UI_RhythmCard : MonoBehaviour, IProduct, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        protected Image m_BackgroundImage;
-        protected Image m_FrameImage;
-        protected Image m_CardImage;
-        protected Tween m_CurTween;
-        protected TextMeshProUGUI m_NoteCountText;
-        protected RhythmCardConfig m_Config;
+        Image m_BackgroundImage;
+        Image m_FrameImage;
+        Image m_CardImage;
+        Tween m_CurTween;
+        TextMeshProUGUI m_NoteCountText;
+        RhythmCardConfig m_Config;
+        float m_CardScale = 1f;
+        bool m_IsSelected = false;
 
         public virtual void OnPointerClick(PointerEventData eventData)
         {
-            
+            m_IsSelected = !m_IsSelected;
+
+            if (m_IsSelected)
+            {
+                Debug.Log(m_Config.CardType);
+
+                OnSelected();
+            }
+            else 
+            { 
+                OnDeselected();
+            }
         }
 
         public virtual void OnPointerEnter(PointerEventData eventData)
@@ -45,8 +58,24 @@ namespace DarkChocoSoft.RhythmCardGame.UI
                 m_CurTween.Kill();
             }
 
-            m_CurTween = transform.DOScale(1, 0.2f)
+            m_CurTween = transform.DOScale(m_CardScale, 0.2f)
                 .SetEase(Ease.InOutSine);
+        }
+
+        public void SetConfig(ScriptableObject config)
+        {
+            RhythmCardConfig rhythmCardConfig = config as RhythmCardConfig;
+            m_BackgroundImage.color = rhythmCardConfig.BackgroundColor;
+            m_CardImage.sprite = rhythmCardConfig.CardSprite;
+
+            if (rhythmCardConfig.NoteCount == 99)
+            {
+                m_NoteCountText.text = "Long";
+            }
+            else
+            {
+                m_NoteCountText.text = rhythmCardConfig.NoteCount.ToString();
+            }
         }
 
         public void LoadConfig(string path)
@@ -55,23 +84,26 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             {
                 m_Config = config;
 
-                ApplyConfig(config);
+                SetConfig(config);
             });
         }
 
-        private void ApplyConfig(RhythmCardConfig config)
+        void OnSelected()
         {
-            m_BackgroundImage.color = config.BackgroundColor;
-            m_CardImage.sprite = config.CardSprite;
+            m_CardScale = 1.1f;
 
-            if (config.NoteCount == 99)
-            {
-                m_NoteCountText.text = "Long";
-            }
-            else
-            {
-                m_NoteCountText.text = config.NoteCount.ToString();
-            }
+            BattleSceneGameManager.Instance.RhythmCardComboDic
+                .Add(BattleSceneGameManager.Instance.SelectedCardSequence, m_Config.CardType);
+        }
+
+        void OnDeselected()
+        {
+            m_CardScale = 1f;
+            m_CurTween = transform.DOScale(m_CardScale, 0.2f)
+                .SetEase(Ease.InOutSine);
+
+            BattleSceneGameManager.Instance.RhythmCardComboDic
+                .Remove(BattleSceneGameManager.Instance.SelectedCardSequence);
         }
 
         protected virtual void Awake()
