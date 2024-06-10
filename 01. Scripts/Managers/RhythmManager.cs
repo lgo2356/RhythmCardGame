@@ -2,7 +2,6 @@ using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
 using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Module;
-using DarkChocoSoft.RhythmCardGame.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -81,8 +80,6 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
                 if (timer >= tempo)
                 {
-                    UI_RhythmPopup popup = PopupManager.Instance.GetPopup<UI_RhythmPopup>() as UI_RhythmPopup;
-
                     RhythmNoteConfig config = new()
                     {
                         Count = 1,
@@ -91,87 +88,42 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
                     if (rhythmCardTypes.TryDequeue(out var rhythmCardType))
                     {
-                        StartCoroutine(RhythmNoteCoroutine(tempo, rhythmCardType));
+                        switch (rhythmCardType)
+                        {
+                            case RhythmCardType.Single:
+                                {
+                                    SingleRhythmNoteFactory factory = m_RhythmNoteFactories[0] as SingleRhythmNoteFactory;
+                                    factory.GenerateRhythmNote(tempo, config, UICanvas);
+                                }
+                                break;
+
+                            case RhythmCardType.Double:
+                                {
+                                    DoubleRhythmNoteFactory factory = m_RhythmNoteFactories[1] as DoubleRhythmNoteFactory;
+                                    factory.GenerateRhythmNote(tempo, config, UICanvas);
+                                }
+                                break;
+
+                            case RhythmCardType.Triple:
+                                {
+                                    TripleRhythmNoteFactory factory = m_RhythmNoteFactories[2] as TripleRhythmNoteFactory;
+                                    factory.GenerateRhythmNote(tempo, config, UICanvas);
+                                }
+                                break;
+
+                            case RhythmCardType.Long:
+                                break;
+                        }
                     }
                     else
                     {
                         break;
                     }
 
-                    IProduct product = m_RhythmNoteFactories[1].GetProduct(popup.RhythmNoteStartPosTransform.position, UICanvas);
+                    IProduct product = m_RhythmNoteFactories[3].GetProduct(new Vector3(25f, 1110f, 0), UICanvas);
                     product.SetConfig(config);
 
                     timer -= tempo;
-                }
-
-                yield return null;
-            }
-        }
-
-        private IEnumerator RhythmNoteCoroutine(double meter, RhythmCardType rhythmCardType)
-        {
-            double timer = meter;
-            int tempoValue;
-            int count;
-
-            switch (rhythmCardType)
-            {
-                case RhythmCardType.Single:
-                    {
-                        tempoValue = 1;
-                        count = 1;
-                    }
-                    break;
-
-                case RhythmCardType.Double:
-                    {
-                        tempoValue = 2;
-                        count = 2;
-                    }
-                    break;
-
-                case RhythmCardType.Triple:
-                    {
-                        tempoValue = 3;
-                        count = 3;
-                    }
-                    break;
-
-                    //TODO: Long 노트 구현
-                case RhythmCardType.Long:
-                    {
-                        tempoValue = 99;
-                        count = 99;
-                    }
-                    break;
-
-                default:
-                    {
-                        tempoValue = 0;
-                        count = 0;
-                    }
-                    break;
-            }
-
-            while (count > 0)
-            {
-                timer += Time.deltaTime * tempoValue;
-
-                if (timer >= meter)
-                {
-                    UI_RhythmPopup popup = PopupManager.Instance.GetPopup<UI_RhythmPopup>() as UI_RhythmPopup;
-
-                    RhythmNoteConfig config = new()
-                    {
-                        Count = 1,
-                        Speed = NoteSpeed,
-                    };
-
-                    IProduct product = m_RhythmNoteFactories[0].GetProduct(popup.RhythmNoteStartPosTransform.position, UICanvas);
-                    product.SetConfig(config);
-
-                    timer -= meter;
-                    count--;
                 }
 
                 yield return null;
@@ -186,10 +138,12 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         private void InitFactory()
         {
-            m_RhythmNoteFactories = new Factory[2];
+            m_RhythmNoteFactories = new Factory[4];
 
-            m_RhythmNoteFactories[0] = gameObject.GetOrAddComponent<RhythmNoteFactory>();
-            m_RhythmNoteFactories[1] = gameObject.GetOrAddComponent<RhythmPivotFactory>();
+            m_RhythmNoteFactories[0] = gameObject.GetOrAddComponent<SingleRhythmNoteFactory>();
+            m_RhythmNoteFactories[1] = gameObject.GetOrAddComponent<DoubleRhythmNoteFactory>();
+            m_RhythmNoteFactories[2] = gameObject.GetOrAddComponent<TripleRhythmNoteFactory>();
+            m_RhythmNoteFactories[3] = gameObject.GetOrAddComponent<RhythmPivotFactory>();
         }
 
         protected override void Awake()

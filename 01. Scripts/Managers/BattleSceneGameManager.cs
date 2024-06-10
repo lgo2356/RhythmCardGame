@@ -1,7 +1,6 @@
 using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
 using DarkChocoSoft.RhythmCardGame.Module;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

@@ -33,8 +33,6 @@ namespace DarkChocoSoft.RhythmCardGame
             ResourceManager.Instance.LoadAsync<RhythmNoteConfig>(path, (config) =>
             {
                 SetConfig(config);
-
-                //StartCoroutine(MoveCoroutine());
             });
         }
 

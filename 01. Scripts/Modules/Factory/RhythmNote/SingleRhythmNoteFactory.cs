@@ -5,11 +5,8 @@ using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Module
 {
-    public abstract class RhythmNoteFactory : Factory
+    public class SingleRhythmNoteFactory : RhythmNoteFactory
     {
-        public abstract void GenerateRhythmNote(double tempo, RhythmNoteConfig config, Transform parent);
-        protected abstract IEnumerator RhythmNoteCoroutine(double meter, RhythmNoteConfig config, Transform parent);
-
         public override IProduct GetProduct(Vector2 pos, Transform parent)
         {
             GameObject prefab = BattleSceneGameManager.Instance.SceneData.RhythmNotePrefab;
@@ -20,6 +17,19 @@ namespace DarkChocoSoft.RhythmCardGame.Module
             note.StartMove();
 
             return note;
+        }
+
+        public override void GenerateRhythmNote(double tempo, RhythmNoteConfig config, Transform parent)
+        {
+            StartCoroutine(RhythmNoteCoroutine(tempo, config, parent));
+        }
+
+        protected override IEnumerator RhythmNoteCoroutine(double meter, RhythmNoteConfig config, Transform parent)
+        {
+            IProduct product = GetProduct(new Vector3(25f, 1110f, 0), parent);
+            product.SetConfig(config);
+
+            yield return null;
         }
     }
 }
