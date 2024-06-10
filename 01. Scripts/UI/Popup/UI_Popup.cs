@@ -36,16 +36,16 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             OnHideAction = callback;
         }
 
-        protected void OnShow()
+        protected virtual void OnShow()
         {
-            Debug.Log("UI_StageSelectPopup Show");
+            Debug.Log($"{gameObject.name} Show");
 
             OnShowAction?.Invoke();
         }
 
-        protected void OnHide()
+        protected virtual void OnHide()
         {
-            Debug.Log("UI_StageSelectPopup Hide");
+            Debug.Log($"{gameObject.name} Hide");
 
             OnHideAction?.Invoke();
         }
@@ -53,6 +53,11 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         protected virtual void Awake()
         {
             gameObject.SetActive(false);
+        }
+
+        protected virtual void Start()
+        {
+
         }
 
         protected virtual void OnDestroy()
