@@ -5,11 +5,14 @@ namespace DarkChocoSoft.RhythmCardGame.UI
 {
     public class UI_RhythmPopup : UI_Popup
     {
+        [SerializeField] RhythmManager RhythmManager;
+
         protected override void OnShow()
         {
             base.OnShow();
 
-            RhythmManager.Instance.StartRhythm();
+            RhythmManager.StartRhythm();
+            //RhythmManager.Instance.StartRhythm();
         }
 
         protected override void OnHide()

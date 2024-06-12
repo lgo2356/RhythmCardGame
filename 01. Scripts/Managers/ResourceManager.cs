@@ -11,6 +11,13 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
     {
         private List<GameObject> m_GameObjectPool = new();
 
+        public GameObject Instantiate(GameObject prefab, Transform parent = null)
+        {
+            GameObject clone = UnityEngine.Object.Instantiate(prefab, parent);
+
+            return clone;
+        }
+
         public void InstantiateAsync(string path, Transform parent, Action < GameObject> callback)
         {
             Addressables.InstantiateAsync(path, parent).Completed += (obj) =>

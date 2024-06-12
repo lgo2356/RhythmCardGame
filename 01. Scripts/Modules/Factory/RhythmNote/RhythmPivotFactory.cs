@@ -5,17 +5,25 @@ namespace DarkChocoSoft.RhythmCardGame.Module
 {
     public class RhythmPivotFactory : Factory
     {
+        private ObjectPool<RhythmNote> m_NotePool;
+
         public override IProduct GetProduct(Vector2 pos, Transform parent)
         {
-            GameObject prefab = BattleSceneGameManager.Instance.SceneData.RhythmPivotPrefab;
-            RhythmNote note = Instantiate(prefab, parent)
-                .GetOrAddComponent<RhythmNote>();
+            RhythmNote note = RhythmPivotObjectPool.Instance.Dequeue();
 
+            //note.transform.SetParent(parent);
             note.transform.position = pos;
             note.StartMove();
-            //note.LoadConfig("Assets/05. Data/RhythmNote/RhythmNoteConfig.asset");
 
             return note;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+
+            RhythmPivotObjectPool.Instance.transform.SetParent(transform.parent);
+            RhythmPivotObjectPool.Instance.Prefab = BattleSceneGameManager.Instance.SceneData.RhythmPivotPrefab;
         }
     }
 }

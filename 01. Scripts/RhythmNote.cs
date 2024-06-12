@@ -1,5 +1,6 @@
 using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Manager;
+using DarkChocoSoft.RhythmCardGame.Module;
 using System.Collections;
 using UnityEngine;
 
@@ -49,6 +50,21 @@ namespace DarkChocoSoft.RhythmCardGame
                 transform.localPosition += Vector3.right * Config.Speed * Time.deltaTime;
 
                 yield return null;
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.CompareTag("RhythmNoteDestroyCollider"))
+            {
+                if (gameObject.name == "RhythmNote(Clone)")
+                {
+                    RhythmNoteObjectPool.Instance.Enqueue(this);
+                }
+                else if (gameObject.name == "RhythmPivot(Clone)")
+                {
+                    RhythmPivotObjectPool.Instance.Enqueue(this);
+                }
             }
         }
     }

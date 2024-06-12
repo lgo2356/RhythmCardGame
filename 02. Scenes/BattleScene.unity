@@ -964,7 +964,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1684521334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -977,11 +977,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38c1e2ca2d5abd1438d801f069c113c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RhythmNotePrefab: {fileID: 4271660016964715561, guid: b1534db02d254184db7c4ea3ab24a5a5, type: 3}
   m_RhythmPivotPrefab: {fileID: 2035162304805479670, guid: 0e3342cd9b018d54185e65bb42b808a4, type: 3}
-  m_RhythmNoteStartPosTransform: {fileID: 0}
   BPM: 60
-  NoteSpeed: 400
 --- !u!4 &1684521335
 Transform:
   m_ObjectHideFlags: 0

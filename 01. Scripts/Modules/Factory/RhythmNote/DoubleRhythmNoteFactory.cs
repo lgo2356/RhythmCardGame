@@ -9,14 +9,18 @@ namespace DarkChocoSoft.RhythmCardGame.Module
     {
         public override IProduct GetProduct(Vector2 pos, Transform parent)
         {
-            GameObject prefab = BattleSceneGameManager.Instance.SceneData.RhythmNotePrefab;
-            RhythmNote note = Instantiate(prefab, parent)
-                .GetOrAddComponent<RhythmNote>();
+            IProduct product = base.GetProduct(pos, parent);
 
-            note.transform.position = pos;
-            note.StartMove();
+            return product;
 
-            return note;
+            //GameObject prefab = BattleSceneGameManager.Instance.SceneData.RhythmNotePrefab;
+            //RhythmNote note = Instantiate(prefab, parent)
+            //    .GetOrAddComponent<RhythmNote>();
+
+            //note.transform.position = pos;
+            //note.StartMove();
+
+            //return note;
         }
 
         public override void GenerateRhythmNote(double tempo, RhythmNoteConfig config, Transform parent)

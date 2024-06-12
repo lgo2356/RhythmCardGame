@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Manager
 {
-    public class RhythmManager : Singleton<RhythmManager>
+    public class RhythmManager : MonoBehaviour
     {
         [SerializeField] GameObject m_RhythmPivotPrefab;
 
@@ -57,6 +57,18 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             for (int i = 0; i < cardTypeDic.Count; i++) 
             {
                 rhythmCardTypes.Enqueue(cardTypeDic[i]);
+            }
+
+            m_GenerateRhythmNoteCoroutine = StartCoroutine(TempoCoroutine(rhythmCardTypes));
+        }
+
+        public void StartTestRhythm()
+        {
+            Queue<RhythmCardType> rhythmCardTypes = new();
+
+            for (int i = 0; i < 10; i++)
+            {
+                rhythmCardTypes.Enqueue(RhythmCardType.Single);
             }
 
             m_GenerateRhythmNoteCoroutine = StartCoroutine(TempoCoroutine(rhythmCardTypes));
@@ -132,8 +144,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         private void InitManager()
         {
-            RemoveDontDestroyOnLoad();
-            SetGameObjectName(MANAGER_NAME);
+            //RemoveDontDestroyOnLoad();
+            //SetGameObjectName(MANAGER_NAME);
         }
 
         private void InitFactory()
@@ -146,9 +158,9 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             m_RhythmNoteFactories[3] = gameObject.GetOrAddComponent<RhythmPivotFactory>();
         }
 
-        protected override void Awake()
+        void Awake()
         {
-            base.Awake();
+            //base.Awake();
 
             InitManager();
             InitFactory();
@@ -165,9 +177,9 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
             RhythmManager rhythmNoteManager = target as RhythmManager;
 
-            if (GUILayout.Button("Start Rhythm"))
+            if (GUILayout.Button("Test Rhythm"))
             {
-                //rhythmNoteManager.StartRhythm();
+                rhythmNoteManager.StartTestRhythm();
             }
 
             if (GUILayout.Button("Stop Rhythm"))
