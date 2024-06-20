@@ -1,4 +1,5 @@
 using DarkChocoSoft.RhythmCardGame.Data;
+using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Manager;
 using DG.Tweening;
 using TMPro;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 
 namespace DarkChocoSoft.RhythmCardGame.UI
 {
-    public class UI_RhythmCard : MonoBehaviour, IProduct, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+    public class UI_RhythmCard : MonoBehaviour, IRhythmCard, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         Image m_BackgroundImage;
         Image m_FrameImage;

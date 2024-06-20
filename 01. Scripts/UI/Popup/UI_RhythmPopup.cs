@@ -12,7 +12,6 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             base.OnShow();
 
             RhythmManager.StartRhythm();
-            //RhythmManager.Instance.StartRhythm();
         }
 
         protected override void OnHide()

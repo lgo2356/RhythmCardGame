@@ -1,6 +1,5 @@
-using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
-using DarkChocoSoft.RhythmCardGame.Data;
+using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,7 +18,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         private Transform m_UICanvas;
         private Coroutine m_GenerateRhythmNoteCoroutine;
-        private Factory[] m_RhythmNoteFactories;
+        private RhythmNoteFactory[] m_RhythmNoteFactories;
         private bool m_IsRhythmStarted = false;
         private int m_NoteSpeed = 800;
 
@@ -66,7 +65,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         {
             Queue<RhythmCardType> rhythmCardTypes = new();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 100; i++)
             {
                 rhythmCardTypes.Enqueue(RhythmCardType.Single);
             }
@@ -92,9 +91,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
                 if (timer >= tempo)
                 {
-                    RhythmNoteConfig config = new()
+                    RhythmNoteData noteData = new()
                     {
-                        Count = 1,
                         Speed = NoteSpeed,
                     };
 
@@ -104,22 +102,22 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                         {
                             case RhythmCardType.Single:
                                 {
-                                    SingleRhythmNoteFactory factory = m_RhythmNoteFactories[0] as SingleRhythmNoteFactory;
-                                    factory.GenerateRhythmNote(tempo, config, UICanvas);
+                                    noteData.NoteCount = 1;
+                                    m_RhythmNoteFactories[0].GenerateRhythmNote(tempo, noteData, UICanvas);
                                 }
                                 break;
 
                             case RhythmCardType.Double:
                                 {
-                                    DoubleRhythmNoteFactory factory = m_RhythmNoteFactories[1] as DoubleRhythmNoteFactory;
-                                    factory.GenerateRhythmNote(tempo, config, UICanvas);
+                                    noteData.NoteCount = 2;
+                                    m_RhythmNoteFactories[0].GenerateRhythmNote(tempo, noteData, UICanvas);
                                 }
                                 break;
 
                             case RhythmCardType.Triple:
                                 {
-                                    TripleRhythmNoteFactory factory = m_RhythmNoteFactories[2] as TripleRhythmNoteFactory;
-                                    factory.GenerateRhythmNote(tempo, config, UICanvas);
+                                    noteData.NoteCount = 3;
+                                    m_RhythmNoteFactories[0].GenerateRhythmNote(tempo, noteData, UICanvas);
                                 }
                                 break;
 
@@ -132,8 +130,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                         break;
                     }
 
-                    IProduct product = m_RhythmNoteFactories[3].GetProduct(new Vector3(25f, 1110f, 0), UICanvas);
-                    product.SetConfig(config);
+                    IRhythmNote note = m_RhythmNoteFactories[1].GetRhythmNote(new Vector3(25f, 1110f, 0), UICanvas);
+                    note.InitRhythmNote(noteData);
 
                     timer -= tempo;
                 }
@@ -142,27 +140,18 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
-        private void InitManager()
-        {
-            //RemoveDontDestroyOnLoad();
-            //SetGameObjectName(MANAGER_NAME);
-        }
-
         private void InitFactory()
         {
-            m_RhythmNoteFactories = new Factory[4];
+            m_RhythmNoteFactories = new RhythmNoteFactory[4];
 
-            m_RhythmNoteFactories[0] = gameObject.GetOrAddComponent<SingleRhythmNoteFactory>();
-            m_RhythmNoteFactories[1] = gameObject.GetOrAddComponent<DoubleRhythmNoteFactory>();
-            m_RhythmNoteFactories[2] = gameObject.GetOrAddComponent<TripleRhythmNoteFactory>();
-            m_RhythmNoteFactories[3] = gameObject.GetOrAddComponent<RhythmPivotFactory>();
+            m_RhythmNoteFactories[0] = gameObject.GetOrAddComponent<RhythmNoteFactory>();
+            m_RhythmNoteFactories[1] = gameObject.GetOrAddComponent<RhythmPivotFactory>();
+
+            //TODO : 각 팩토리에 필요한 데이터 주입하기
         }
 
         void Awake()
         {
-            //base.Awake();
-
-            InitManager();
             InitFactory();
         }
     }

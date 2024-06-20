@@ -1,10 +1,10 @@
-using DarkChocoSoft.RhythmCardGame.Const;
 using DarkChocoSoft.RhythmCardGame.Data;
+using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Manager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class Character : MonoBehaviour, IProduct
+public abstract class Character : MonoBehaviour, ICharacter
 {
     [SerializeField] protected Sprite CharacterSprite;
 

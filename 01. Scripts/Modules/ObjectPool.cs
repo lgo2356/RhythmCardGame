@@ -1,11 +1,10 @@
-using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Manager;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Module
 {
-    public class ObjectPool<T> : Singleton<ObjectPool<T>> where T : Component
+    public class ObjectPool<T> where T : Component
     {        
         Queue<T> m_Pool = new();
 

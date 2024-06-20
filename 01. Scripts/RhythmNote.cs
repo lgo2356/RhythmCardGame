@@ -1,27 +1,23 @@
-using DarkChocoSoft.RhythmCardGame.Data;
-using DarkChocoSoft.RhythmCardGame.Manager;
-using DarkChocoSoft.RhythmCardGame.Module;
+using DarkChocoSoft.RhythmCardGame.Interface;
+using System;
 using System.Collections;
 using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame
 {
-    public class RhythmNote : MonoBehaviour, IProduct
+    public class RhythmNote : MonoBehaviour, IRhythmNote
     {
-        public RhythmNoteConfig Config
-        { 
-            get; 
-            private set; 
+        private RhythmNoteData m_Data;
+        private Action<RhythmNote> m_OnDestroyAction;
+
+        public void InitRhythmNote(RhythmNoteData data)
+        {
+            m_Data = data;
         }
 
         public void SetConfig(ScriptableObject config)
         { 
-            Config = config as RhythmNoteConfig;
-        }
-
-        public void SetSpeed(int value)
-        { 
-            Config.Speed = value;
+            //Config = config as RhythmNoteConfig;
         }
 
         public void StartMove()
@@ -29,25 +25,16 @@ namespace DarkChocoSoft.RhythmCardGame
             StartCoroutine(MoveCoroutine());
         }
 
-        public void LoadConfig(string path)
+        public void SetOnDestroyListener(Action<RhythmNote> callback)
         {
-            ResourceManager.Instance.LoadAsync<RhythmNoteConfig>(path, (config) =>
-            {
-                SetConfig(config);
-            });
+            m_OnDestroyAction = callback;
         }
 
         private IEnumerator MoveCoroutine()
         {
             while (true)
             {
-                if (Config == null)
-                {
-                    yield return null;
-                    continue;
-                }
-
-                transform.localPosition += Vector3.right * Config.Speed * Time.deltaTime;
+                transform.localPosition += Vector3.right * m_Data.Speed * Time.deltaTime;
 
                 yield return null;
             }
@@ -57,14 +44,7 @@ namespace DarkChocoSoft.RhythmCardGame
         {
             if (collision.CompareTag("RhythmNoteDestroyCollider"))
             {
-                if (gameObject.name == "RhythmNote(Clone)")
-                {
-                    RhythmNoteObjectPool.Instance.Enqueue(this);
-                }
-                else if (gameObject.name == "RhythmPivot(Clone)")
-                {
-                    RhythmPivotObjectPool.Instance.Enqueue(this);
-                }
+                m_OnDestroyAction?.Invoke(this);
             }
         }
     }

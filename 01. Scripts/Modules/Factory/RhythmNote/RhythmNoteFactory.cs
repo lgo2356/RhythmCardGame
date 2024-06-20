@@ -1,34 +1,83 @@
-using DarkChocoSoft.RhythmCardGame.Data;
+using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Manager;
 using System.Collections;
 using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Module
 {
-    public abstract class RhythmNoteFactory : Factory
+    public class RhythmNoteFactory : Factory
     {
-        private ObjectPool<RhythmNote> m_NotePool;
+        protected ObjectPool<RhythmNote> m_NotePool;
 
-        public abstract void GenerateRhythmNote(double tempo, RhythmNoteConfig config, Transform parent);
-        protected abstract IEnumerator RhythmNoteCoroutine(double meter, RhythmNoteConfig config, Transform parent);
-
-        public override IProduct GetProduct(Vector2 pos, Transform parent)
+        public void InitRhythmNote(RhythmNoteData noteData)
         {
-            RhythmNote note = RhythmNoteObjectPool.Instance.Dequeue();
 
-            //note.transform.SetParent(parent);
+        }
+
+        public virtual IRhythmNote GetRhythmNote(Vector2 pos, Transform parent = null)
+        {
+            RhythmNote note = m_NotePool.Dequeue();
+
+            note.transform.SetParent(parent);
             note.transform.position = pos;
+            note.SetOnDestroyListener(OnRhythmNoteDestroy);
             note.StartMove();
 
             return note;
+        }
+
+        public void GenerateRhythmNote(double tempo, RhythmNoteData noteData, Transform parent)
+        {
+            StartCoroutine(RhythmNoteCoroutine(tempo, noteData, parent));
+        }
+
+        protected IEnumerator RhythmNoteCoroutine(double meter, RhythmNoteData noteData, Transform parent)
+        {
+            double timer = meter;
+            int tempoValue = noteData.NoteCount;
+
+            while (noteData.NoteCount > 0)
+            {
+                timer += Time.deltaTime * tempoValue;
+
+                if (timer >= meter)
+                {
+                    IRhythmNote note = GetRhythmNote(new Vector3(25f, 1110f, 0), parent);
+                    note.InitRhythmNote(noteData);
+
+                    timer -= meter;
+                    noteData.NoteCount--;
+                }
+
+                yield return null;
+            }
+        }
+
+        private void OnRhythmNoteDestroy(RhythmNote note)
+        {
+            m_NotePool.Enqueue(note);
+        }
+
+        protected virtual void Init()
+        { 
+            GameObject notePrefab = BattleSceneGameManager.Instance.SceneData.RhythmNotePrefab;
+
+            InitRhythmNotePool(notePrefab);
+        }
+
+        private void InitRhythmNotePool(GameObject notePrefab)
+        {
+            m_NotePool = new ObjectPool<RhythmNote>()
+            { 
+                Prefab = notePrefab,
+            };
         }
 
         protected override void Start()
         {
             base.Start();
 
-            RhythmNoteObjectPool.Instance.transform.SetParent(transform.parent);
-            RhythmNoteObjectPool.Instance.Prefab = BattleSceneGameManager.Instance.SceneData.RhythmNotePrefab;
+            Init();
         }
     }
 }

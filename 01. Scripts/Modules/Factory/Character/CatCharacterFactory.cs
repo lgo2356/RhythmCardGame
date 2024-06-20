@@ -1,12 +1,13 @@
+using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Character;
 using DarkChocoSoft.RhythmCardGame.Manager;
 using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Module
 {
-    public class CatCharacterFactory : Factory
+    public class CatCharacterFactory : CharacterFactory
     {
-        public override IProduct GetProduct(Vector2 pos, Transform parent)
+        public override ICharacter GetCharacter(Vector2 pos, Transform parent)
         {
             GameObject prefab = BattleSceneGameManager.Instance.SceneData.MonsterCharacterPrefab;
             CatCharacter character = Instantiate(prefab, parent)
