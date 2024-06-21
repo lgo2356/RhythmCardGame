@@ -1,26 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class PlayerInputController : MonoBehaviour
+namespace DarkChocoSoft.RhythmCardGame.Module
 {
-    RhythmTimingManager m_TimingManager;
-
-    void OnHitRhythmNote()
+    public class PlayerInputController : MonoBehaviour
     {
-        Debug.Log("OnHitRhythmNote()");
+        protected virtual void Awake()
+        {
 
-        m_TimingManager.CheckHitTiming();
-    }
+        }
 
-    void Awake()
-    {
-        m_TimingManager = FindObjectOfType<RhythmTimingManager>();
-    }
+        protected virtual void Start()
+        {
 
-    void Update()
-    {
-        
+        }
+
+        protected virtual void Update()
+        {
+
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         private Coroutine m_GenerateRhythmNoteCoroutine;
         private RhythmNoteFactory[] m_RhythmNoteFactories;
         private bool m_IsRhythmStarted = false;
-        private int m_NoteSpeed = 800;
+        private int m_NoteSpeed = 400;
 
         public Transform UICanvas
         {
@@ -130,8 +130,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                         break;
                     }
 
-                    IRhythmNote note = m_RhythmNoteFactories[1].GetRhythmNote(new Vector3(25f, 1110f, 0), UICanvas);
-                    note.InitRhythmNote(noteData);
+                    //IRhythmNote note = m_RhythmNoteFactories[1].GetRhythmNote(new Vector3(25f, 1110f, 0), UICanvas);
+                    //note.InitRhythmNote(noteData);
 
                     timer -= tempo;
                 }

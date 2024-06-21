@@ -9,6 +9,8 @@ namespace DarkChocoSoft.RhythmCardGame
     {
         private RhythmNoteData m_Data;
         private Action<RhythmNote> m_OnDestroyAction;
+        private Coroutine m_MoveCoroutine;
+        private bool m_IsStarted = false;
 
         public void InitRhythmNote(RhythmNoteData data)
         {
@@ -22,12 +24,29 @@ namespace DarkChocoSoft.RhythmCardGame
 
         public void StartMove()
         {
-            StartCoroutine(MoveCoroutine());
+            m_IsStarted = true;
+            //if (m_MoveCoroutine != null)
+            //{
+            //    StopCoroutine(m_MoveCoroutine);
+            //}
+
+            //m_MoveCoroutine = StartCoroutine(MoveCoroutine());
         }
 
         public void SetOnDestroyListener(Action<RhythmNote> callback)
         {
             m_OnDestroyAction = callback;
+        }
+
+        public void Destroy()
+        {
+            //if (m_MoveCoroutine != null)
+            //{
+            //    StopCoroutine(m_MoveCoroutine);
+            //    m_MoveCoroutine = null;
+            //}            
+
+            m_OnDestroyAction?.Invoke(this);
         }
 
         private IEnumerator MoveCoroutine()
@@ -44,8 +63,22 @@ namespace DarkChocoSoft.RhythmCardGame
         {
             if (collision.CompareTag("RhythmNoteDestroyCollider"))
             {
-                m_OnDestroyAction?.Invoke(this);
+                Destroy();
             }
+        }
+
+        private void Update()
+        {
+            if (!m_IsStarted)
+                return;
+
+            transform.localPosition += Vector3.right * m_Data.Speed * Time.deltaTime;
+        }
+
+        private void OnDisable()
+        {
+            m_IsStarted = false;
+            m_OnDestroyAction = null;
         }
     }
 }
