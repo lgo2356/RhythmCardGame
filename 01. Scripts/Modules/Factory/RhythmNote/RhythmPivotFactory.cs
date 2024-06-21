@@ -1,21 +1,14 @@
 using DarkChocoSoft.RhythmCardGame.Manager;
-using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Module
 {
-    public class RhythmPivotFactory : Factory
+    public class RhythmPivotFactory : RhythmNoteFactory
     {
-        public override IProduct GetProduct(Vector2 pos, Transform parent)
+        protected override void Start()
         {
-            GameObject prefab = BattleSceneGameManager.Instance.SceneData.RhythmPivotPrefab;
-            RhythmNote note = Instantiate(prefab, parent)
-                .GetOrAddComponent<RhythmNote>();
+            base.Start();
 
-            note.transform.position = pos;
-            note.StartMove();
-            //note.LoadConfig("Assets/05. Data/RhythmNote/RhythmNoteConfig.asset");
-
-            return note;
+            m_NotePool.Prefab = BattleSceneGameManager.Instance.SceneData.RhythmPivotPrefab;
         }
     }
 }

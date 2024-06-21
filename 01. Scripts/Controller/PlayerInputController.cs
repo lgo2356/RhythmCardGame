@@ -2,18 +2,21 @@ using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Module
 {
-    public abstract class Factory : MonoBehaviour
+    public class PlayerInputController : MonoBehaviour
     {
-        //public abstract IProduct GetProduct(Vector2 pos, Transform parent);
-
         protected virtual void Awake()
         {
-            
+
         }
 
         protected virtual void Start()
         {
-            
+
+        }
+
+        protected virtual void Update()
+        {
+
         }
     }
 }

@@ -1,7 +1,6 @@
 using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
 using DarkChocoSoft.RhythmCardGame.Module;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,6 +24,20 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         private const string MANAGER_NAME = "[ GameManager ]";
 
         private int m_SelectedCardSequence = -1;
+        private CharacterManager m_CharacterModule;
+
+        public CharacterManager CharacterModule
+        {
+            get
+            {
+                if (m_CharacterModule == null)
+                {
+                    m_CharacterModule = gameObject.GetOrAddComponent<CharacterManager>();
+                }
+
+                return m_CharacterModule;
+            }
+        }
 
         public BattleSceneData SceneData
         {
@@ -65,8 +78,9 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         protected override void Start()
         {
-            CharacterManager.Instance.SpawnPlayerCharacter();
-            CharacterManager.Instance.SpawnMonsterCharacter();
+            CharacterModule.SpawnPlayerCharacter();
+            CharacterModule.SpawnMonsterCharacter();
+            
             RhythmCardManager.Instance.DrawCard(5);
         }
     }

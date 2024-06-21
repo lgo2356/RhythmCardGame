@@ -2,6 +2,7 @@ using DarkChocoSoft.Algorithm.DataStructure;
 using DarkChocoSoft.Exception;
 using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
+using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
 using System;
 using UnityEditor;
@@ -14,7 +15,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         private const string MANAGER_NAME = "[ RhythmCardManager ]";
 
         private GameObject m_CardPanel;
-        private Factory[] m_CardFactories;
+        private RhythmCardFactory[] m_CardFactories;
         private Deque<RhythmCardType> m_CardDeck;
 
         public GameObject CardPanel
@@ -37,7 +38,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 try
                 {
                     RhythmCardType cardType = m_CardDeck.DequeueFront();
-                    IProduct product = m_CardFactories[(int)cardType].GetProduct(Vector2.zero, CardPanel.transform);
+                    IRhythmCard character = m_CardFactories[(int)cardType].GetRhythmCard(Vector2.zero, CardPanel.transform);
                     //IProduct product = m_CardFactories[0].GetProduct(Vector2.zero, CardPanel.transform);
                 }
                 catch (DequeEmptyException)
@@ -61,7 +62,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         private void InitCardFactory()
         {
-            m_CardFactories = new Factory[Enum.GetValues(typeof(RhythmCardType)).Length];
+            m_CardFactories = new RhythmCardFactory[Enum.GetValues(typeof(RhythmCardType)).Length];
 
             m_CardFactories[0] = gameObject.GetOrAddComponent<SingleRhythmCardFactory>();
             m_CardFactories[1] = gameObject.GetOrAddComponent<DoubleRhythmCardFactory>();
