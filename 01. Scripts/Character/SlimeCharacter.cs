@@ -1,7 +1,7 @@
 using DarkChocoSoft.RhythmCardGame.Manager;
 using UnityEngine;
 
-namespace DarkChocoSoft.RhythmCardGame.Character
+namespace DarkChocoSoft.RhythmCardGame
 {
     public class SlimeCharacter : PlayerCharacter
     {

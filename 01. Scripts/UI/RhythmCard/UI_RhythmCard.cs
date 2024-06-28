@@ -9,6 +9,9 @@ using UnityEngine.UI;
 
 namespace DarkChocoSoft.RhythmCardGame.UI
 {
+    /**
+     * 리듬 난이도에 맞춰 비트를 선택한다.
+     */
     public class UI_RhythmCard : MonoBehaviour, IRhythmCard, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         Image m_BackgroundImage;
@@ -17,6 +20,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         Tween m_CurTween;
         TextMeshProUGUI m_NoteCountText;
         RhythmCardConfig m_Config;
+        RhythmCardData m_Data;
         float m_CardScale = 1f;
         bool m_IsSelected = false;
 
@@ -26,7 +30,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
 
             if (m_IsSelected)
             {
-                Debug.Log(m_Config.CardType);
+                RhythmCardManager.Instance.DeselectAllCardExcept(this);
 
                 OnSelected();
             }
@@ -68,15 +72,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             RhythmCardConfig rhythmCardConfig = config as RhythmCardConfig;
             m_BackgroundImage.color = rhythmCardConfig.BackgroundColor;
             m_CardImage.sprite = rhythmCardConfig.CardSprite;
-
-            if (rhythmCardConfig.NoteCount == 99)
-            {
-                m_NoteCountText.text = "Long";
-            }
-            else
-            {
-                m_NoteCountText.text = rhythmCardConfig.NoteCount.ToString();
-            }
+            m_NoteCountText.text = "";
         }
 
         public void LoadConfig(string path)
@@ -89,22 +85,34 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             });
         }
 
-        void OnSelected()
+        public void OnSelected()
         {
+            m_IsSelected = true;
             m_CardScale = 1.1f;
 
-            BattleSceneGameManager.Instance.RhythmCardComboDic
-                .Add(BattleSceneGameManager.Instance.SelectedCardSequence, m_Config.CardType);
+            BattleSceneGameManager.Instance.SelectedCard = m_Data;
+
+            //BattleSceneGameManager.Instance.RhythmCardComboDic
+            //    .Add(BattleSceneGameManager.Instance.SelectedCardSequence, m_Data);
         }
 
-        void OnDeselected()
+        public void OnDeselected()
         {
+            m_IsSelected = false;
             m_CardScale = 1f;
+
+            if (m_CurTween != null && m_CurTween.IsActive() && m_CurTween.IsPlaying())
+            {
+                m_CurTween.Kill();
+            }
+
             m_CurTween = transform.DOScale(m_CardScale, 0.2f)
                 .SetEase(Ease.InOutSine);
 
-            BattleSceneGameManager.Instance.RhythmCardComboDic
-                .Remove(BattleSceneGameManager.Instance.SelectedCardSequence);
+            BattleSceneGameManager.Instance.SelectedCard = default;
+
+            //BattleSceneGameManager.Instance.RhythmCardComboDic
+            //    .Remove(BattleSceneGameManager.Instance.SelectedCardSequence);
         }
 
         protected virtual void Awake()

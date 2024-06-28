@@ -51,6 +51,7 @@ namespace DarkChocoSoft.RhythmCardGame.Module
                 .Add("Assets/04. Prefabs/Character/MonsterCharacter.prefab")
                 .Add("Assets/04. Prefabs/UI_RhythmCard.prefab")
                 .Add("Assets/04. Prefabs/RhythmNote.prefab")
+                .Add("Assets/04. Prefabs/LongRhythmNote.prefab")
                 .Add("Assets/04. Prefabs/RhythmPivot.prefab")
                 .OnComplete((type, asset) =>
                 {
@@ -70,6 +71,10 @@ namespace DarkChocoSoft.RhythmCardGame.Module
 
                         case "RhythmNote":
                             m_BattleSceneData.RhythmNotePrefab = asset;
+                            break;
+
+                        case "LongRhythmNote":
+                            m_BattleSceneData.LongRhythmNotePrefab = asset;
                             break;
 
                         case "RhythmPivot":

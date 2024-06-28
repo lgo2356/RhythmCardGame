@@ -1,5 +1,4 @@
 using DarkChocoSoft.RhythmCardGame.Const;
-using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
 using System;
 using UnityEngine;
@@ -9,31 +8,62 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
     public class CharacterManager : MonoBehaviour
     {
         private CharacterFactory[] m_CharacterFactories;
-        private GameObject m_BattleField;
+        private BattleField m_BattleField;
 
-        public GameObject BattleField
+        public BattleField BattleField
         {
             get
             {
                 if (m_BattleField == null)
                 {
-                    m_BattleField = GameObject.Find("BattleField");
+                    GameObject instance = GameObject.Find("BattleField");
+                    m_BattleField = instance.GetOrAddComponent<BattleField>();
                 }
 
                 return m_BattleField;
             }
         }
 
-        public void SpawnPlayerCharacter()
+        public PlayerCharacter Player
         {
-            CharacterName characterType = BattleSceneGameManager.Instance.SceneData.PlayerCharacterType;
-            ICharacter character = m_CharacterFactories[(int)characterType].GetCharacter(Vector2.zero, BattleField.transform);
+            get; private set;
         }
 
-        public void SpawnMonsterCharacter()
+        public MonsterCharacter Monster
         {
-            CharacterName characterType = BattleSceneGameManager.Instance.SceneData.MonsterCharacterType;
-            ICharacter character = m_CharacterFactories[(int)characterType].GetCharacter(Vector2.zero, BattleField.transform);
+            get; private set;
+        }
+
+        public void SpawnPlayerCharacter(CharacterName name, GameObject prefab)
+        {
+            switch (name)
+            {
+                case CharacterName.Slime:
+                    {
+                        SlimeCharacterFactory factory = gameObject.GetOrAddComponent<SlimeCharacterFactory>();
+                        Vector2 position = BattleField.PlayerPositionTransform.position;
+                        SlimeCharacter slime = factory.GetCharacter(prefab, position, BattleField.transform) as SlimeCharacter;
+
+                        Player = slime;
+                    }
+                    break;
+            }
+        }
+
+        public void SpawnMonsterCharacter(CharacterName name, GameObject prefab)
+        {
+            switch (name)
+            {
+                case CharacterName.Cat:
+                    {
+                        CatCharacterFactory factory = gameObject.GetOrAddComponent<CatCharacterFactory>();
+                        Vector2 position = BattleField.MonsterPositionTransform.position;
+                        CatCharacter cat = factory.GetCharacter(prefab, position, BattleField.transform) as CatCharacter;
+
+                        Monster = cat;
+                    }
+                    break;
+            }
         }
 
         private void InitCharacterFactory()
