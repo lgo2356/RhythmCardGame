@@ -1,5 +1,6 @@
 using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
+using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         public GameObject RhythmCardPrefab;
         public GameObject RhythmNotePrefab;
+        public GameObject LongRhythmNotePrefab;
         public GameObject RhythmPivotPrefab;
         public GameObject PlayerCharacterPrefab;
         public GameObject MonsterCharacterPrefab;
@@ -25,6 +27,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         private int m_SelectedCardSequence = -1;
         private CharacterManager m_CharacterModule;
+        private BattleManager m_BattleModule;
 
         public CharacterManager CharacterModule
         {
@@ -39,12 +42,30 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
+        public BattleManager BattleModule
+        {
+            get
+            {
+                if (m_BattleModule == null)
+                {
+                    m_BattleModule = gameObject.GetOrAddComponent<BattleManager>();
+                }
+
+                return m_BattleModule;
+            }
+        }
+
         public BattleSceneData SceneData
         {
             get; private set;
         }
 
-        public Dictionary<int, RhythmCardType> RhythmCardComboDic
+        public RhythmCardData SelectedCard
+        { 
+            get; set;
+        }
+
+        public Dictionary<int, RhythmCardData> RhythmCardComboDic
         {
             get; set;
         } = new();
@@ -64,6 +85,14 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
+        public void DoBattle(float rhythmRatio)
+        {
+            //TODO: 각종 버프 디버프 적용
+            //TODO: 리듬 성공률에 따라 대미지 계산
+
+            CharacterModule.Player.Attack(CharacterModule.Monster, 10f);
+        }
+
         protected override void Awake()
         {
             base.Awake();
@@ -78,8 +107,13 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         protected override void Start()
         {
-            CharacterModule.SpawnPlayerCharacter();
-            CharacterModule.SpawnMonsterCharacter();
+            CharacterModule.SpawnPlayerCharacter(
+                SceneData.PlayerCharacterType,
+                SceneData.PlayerCharacterPrefab);
+
+            CharacterModule.SpawnMonsterCharacter(
+                SceneData.MonsterCharacterType,
+                SceneData.MonsterCharacterPrefab);
             
             RhythmCardManager.Instance.DrawCard(5);
         }

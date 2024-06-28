@@ -1,8 +1,8 @@
-using DarkChocoSoft.RhythmCardGame.Const;
 using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
+using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,17 +10,17 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 {
     public class RhythmManager : MonoBehaviour
     {
-        [SerializeField] GameObject m_RhythmPivotPrefab;
-
-        private const string MANAGER_NAME = "[ RhythmManager ]";
+        [SerializeField] EndRhythmNote m_EndRhythmNotePrefab;
+        [SerializeField] RectTransform m_RhythmNoteStartPositionTransform;
+        [SerializeField] RhythmNoteHitTimingManager m_RhythmNoteHitTimingManager;
 
         public int BPM = 120;
 
         private Transform m_UICanvas;
         private Coroutine m_GenerateRhythmNoteCoroutine;
         private RhythmNoteFactory[] m_RhythmNoteFactories;
-        private bool m_IsRhythmStarted = false;
         private int m_NoteSpeed = 400;
+        private Action m_EndRhythmNoteDestroyAction;
 
         public Transform UICanvas
         {
@@ -42,140 +42,183 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 return m_NoteSpeed;
             }
 
-            private set 
-            { 
-                m_NoteSpeed = value; 
+            private set
+            {
+                m_NoteSpeed = value;
             }
         }
 
         public void StartRhythm()
         {
-            Dictionary<int, RhythmCardType> cardTypeDic = BattleSceneGameManager.Instance.RhythmCardComboDic;
-            Queue<RhythmCardType> rhythmCardTypes = new();
+            RhythmCardData cardData = BattleSceneGameManager.Instance.SelectedCard;
 
-            for (int i = 0; i < cardTypeDic.Count; i++) 
-            {
-                rhythmCardTypes.Enqueue(cardTypeDic[i]);
-            }
+            //TODO: 리듬 난이도에 따라 비트 선택하기
 
-            m_GenerateRhythmNoteCoroutine = StartCoroutine(TempoCoroutine(rhythmCardTypes));
-        }
+            BeatData beatData = GetDummyBeat();
 
-        public void StartTestRhythm()
-        {
-            Queue<RhythmCardType> rhythmCardTypes = new();
-
-            for (int i = 0; i < 100; i++)
-            {
-                rhythmCardTypes.Enqueue(RhythmCardType.Single);
-            }
-
-            m_GenerateRhythmNoteCoroutine = StartCoroutine(TempoCoroutine(rhythmCardTypes));
+            m_GenerateRhythmNoteCoroutine = StartCoroutine(BeatCoroutine(beatData));
         }
 
         public void StopRhythm()
         {
             StopCoroutine(m_GenerateRhythmNoteCoroutine);
-
             m_GenerateRhythmNoteCoroutine = null;
+
+            if (PopupManager.Instance.IsShowing(PopupType.UI_RhythmPopup))
+            {
+                PopupManager.Instance.HidePopup(PopupType.UI_RhythmPopup);
+            }
+
+            float ratio = m_RhythmNoteHitTimingManager.HitRatio;
+            BattleSceneGameManager.Instance.DoBattle(ratio);
         }
 
-        private IEnumerator TempoCoroutine(Queue<RhythmCardType> rhythmCardTypes)
+        public void StartTestRhythm()
         {
+            BeatData beatData = GetTestBeat();
+
+            m_GenerateRhythmNoteCoroutine = StartCoroutine(BeatCoroutine(beatData));
+        }
+
+        private IEnumerator BeatCoroutine(BeatData beatData)
+        {
+            Vector2 noteStartPosition = m_RhythmNoteStartPositionTransform.position;
+
             double timer = 0d;
             double tempo = 60d / BPM;
 
-            while (true)
+            RhythmNoteData noteData = new()
+            {
+                Speed = NoteSpeed,
+            };
+
+            int i = 0;
+
+            while (i < beatData.total)
             {
                 timer += Time.deltaTime;
 
                 if (timer >= tempo)
                 {
-                    RhythmNoteData noteData = new()
+                    switch (beatData.notes[i].type)
                     {
-                        Speed = NoteSpeed,
-                    };
+                        case "normal":
+                            {
+                                noteData.NoteCount = beatData.notes[i].count;
 
-                    if (rhythmCardTypes.TryDequeue(out var rhythmCardType))
-                    {
-                        switch (rhythmCardType)
-                        {
-                            case RhythmCardType.Single:
-                                {
-                                    noteData.NoteCount = 1;
-                                    m_RhythmNoteFactories[0].GenerateRhythmNote(tempo, noteData, UICanvas);
-                                }
-                                break;
+                                RhythmNoteFactory factory = m_RhythmNoteFactories[0];
+                                factory.GenerateRhythmNote(tempo, noteData, noteStartPosition, UICanvas);
+                            }
+                            break;
 
-                            case RhythmCardType.Double:
-                                {
-                                    noteData.NoteCount = 2;
-                                    m_RhythmNoteFactories[0].GenerateRhythmNote(tempo, noteData, UICanvas);
-                                }
-                                break;
-
-                            case RhythmCardType.Triple:
-                                {
-                                    noteData.NoteCount = 3;
-                                    m_RhythmNoteFactories[0].GenerateRhythmNote(tempo, noteData, UICanvas);
-                                }
-                                break;
-
-                            case RhythmCardType.Long:
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        break;
+                        case "long":
+                            break;
                     }
 
-                    //IRhythmNote note = m_RhythmNoteFactories[1].GetRhythmNote(new Vector3(25f, 1110f, 0), UICanvas);
-                    //note.InitRhythmNote(noteData);
-
+                    i++;
                     timer -= tempo;
                 }
 
                 yield return null;
             }
+
+            yield return new WaitForSeconds(0.5f);
+
+            Debug.Log($"Beat End ratio : {m_RhythmNoteHitTimingManager.HitRatio}");
+
+            EndRhythmNote endRhythmNote = Instantiate(m_EndRhythmNotePrefab, UICanvas);
+            endRhythmNote.transform.position = noteStartPosition;
+            endRhythmNote.InitRhythmNote(noteData);
+            endRhythmNote.SetOnDestroyListener(OnEndRhythmNoteDestory);
+            endRhythmNote.StartMove();
         }
 
         private void InitFactory()
         {
             m_RhythmNoteFactories = new RhythmNoteFactory[4];
 
-            m_RhythmNoteFactories[0] = gameObject.GetOrAddComponent<RhythmNoteFactory>();
-            m_RhythmNoteFactories[1] = gameObject.GetOrAddComponent<RhythmPivotFactory>();
+            m_RhythmNoteFactories[0] = gameObject.GetOrAddComponent<NormalRhythmNoteFactory>();
+            m_RhythmNoteFactories[0].Init();
+
+            m_RhythmNoteFactories[1] = gameObject.GetOrAddComponent<LongRhythmNoteFactory>();
+            m_RhythmNoteFactories[1].Init();
+
+            //m_RhythmNoteFactories[2] = gameObject.GetOrAddComponent<RhythmPivotFactory>();
 
             //TODO : 각 팩토리에 필요한 데이터 주입하기
+        }
+
+        private void OnEndRhythmNoteDestory(RhythmNote note)
+        {
+            Destroy(note.gameObject);
+
+            StopRhythm();
         }
 
         void Awake()
         {
             InitFactory();
         }
-    }
+
+        private BeatData GetDummyBeat()
+        {
+            string path = Application.dataPath + "/01. Scripts/Data/DummyBeatJson.json";
+
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+                BeatData data = JsonUtility.FromJson<BeatData>(json);
+
+                return data;
+            }
+            else
+            {
+                Debug.LogError("File not found");
+            }
+
+            return null;
+        }
+
+        private BeatData GetTestBeat()
+        {
+            string path = Application.dataPath + "/01. Scripts/Data/TestBeatJson.json";
+
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+                BeatData data = JsonUtility.FromJson<BeatData>(json);
+
+                return data;
+            }
+            else
+            {
+                Debug.LogError("File not found");
+            }
+
+            return null;
+        }
 
 #if UNITY_EDITOR
-    [CustomEditor(typeof(RhythmManager))]
-    public class RhythmNoteManagerEditor : Editor
-    {
-        public override void OnInspectorGUI()
+        [CustomEditor(typeof(RhythmManager))]
+        public class RhythmNoteManagerEditor : Editor
         {
-            base.OnInspectorGUI();
-
-            RhythmManager rhythmNoteManager = target as RhythmManager;
-
-            if (GUILayout.Button("Test Rhythm"))
+            public override void OnInspectorGUI()
             {
-                rhythmNoteManager.StartTestRhythm();
-            }
+                base.OnInspectorGUI();
 
-            if (GUILayout.Button("Stop Rhythm"))
-            {
-                rhythmNoteManager.StopRhythm();
+                RhythmManager rhythmNoteManager = target as RhythmManager;
+
+                if (GUILayout.Button("Test Rhythm"))
+                {
+                    rhythmNoteManager.StartTestRhythm();
+                }
+
+                if (GUILayout.Button("Stop Rhythm"))
+                {
+                    rhythmNoteManager.StopRhythm();
+                }
             }
         }
-    }
 #endif
+    }
 }

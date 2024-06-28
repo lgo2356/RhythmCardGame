@@ -5,12 +5,11 @@ using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame
 {
-    public class RhythmNote : MonoBehaviour, IRhythmNote
+    public abstract class RhythmNote : MonoBehaviour, IRhythmNote
     {
-        private RhythmNoteData m_Data;
-        private Action<RhythmNote> m_OnDestroyAction;
-        private Coroutine m_MoveCoroutine;
-        private bool m_IsStarted = false;
+        protected RhythmNoteData m_Data;
+        protected Action<RhythmNote> m_OnDestroyAction;
+        protected Coroutine m_MoveCoroutine;
 
         public void InitRhythmNote(RhythmNoteData data)
         {
@@ -24,13 +23,12 @@ namespace DarkChocoSoft.RhythmCardGame
 
         public void StartMove()
         {
-            m_IsStarted = true;
-            //if (m_MoveCoroutine != null)
-            //{
-            //    StopCoroutine(m_MoveCoroutine);
-            //}
+            if (m_MoveCoroutine != null)
+            {
+                StopCoroutine(m_MoveCoroutine);
+            }
 
-            //m_MoveCoroutine = StartCoroutine(MoveCoroutine());
+            m_MoveCoroutine = StartCoroutine(MoveCoroutine());
         }
 
         public void SetOnDestroyListener(Action<RhythmNote> callback)
@@ -40,11 +38,11 @@ namespace DarkChocoSoft.RhythmCardGame
 
         public void Destroy()
         {
-            //if (m_MoveCoroutine != null)
-            //{
-            //    StopCoroutine(m_MoveCoroutine);
-            //    m_MoveCoroutine = null;
-            //}            
+            if (m_MoveCoroutine != null)
+            {
+                StopCoroutine(m_MoveCoroutine);
+                m_MoveCoroutine = null;
+            }
 
             m_OnDestroyAction?.Invoke(this);
         }
@@ -59,7 +57,7 @@ namespace DarkChocoSoft.RhythmCardGame
             }
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        protected virtual void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.CompareTag("RhythmNoteDestroyCollider"))
             {
@@ -67,17 +65,8 @@ namespace DarkChocoSoft.RhythmCardGame
             }
         }
 
-        private void Update()
-        {
-            if (!m_IsStarted)
-                return;
-
-            transform.localPosition += Vector3.right * m_Data.Speed * Time.deltaTime;
-        }
-
         private void OnDisable()
         {
-            m_IsStarted = false;
             m_OnDestroyAction = null;
         }
     }

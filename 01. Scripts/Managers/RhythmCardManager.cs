@@ -4,7 +4,9 @@ using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
 using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
+using DarkChocoSoft.RhythmCardGame.UI;
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,6 +19,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         private GameObject m_CardPanel;
         private RhythmCardFactory[] m_CardFactories;
         private Deque<RhythmCardType> m_CardDeck;
+        private List<UI_RhythmCard> m_CardHand = new();
 
         public GameObject CardPanel
         {
@@ -31,6 +34,11 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
+        public bool IsRead
+        {
+            get; private set;
+        }
+
         public void DrawCard(int count = 1)
         {
             for (int i = 0; i < count; i++)
@@ -39,7 +47,9 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 {
                     RhythmCardType cardType = m_CardDeck.DequeueFront();
                     IRhythmCard character = m_CardFactories[(int)cardType].GetRhythmCard(Vector2.zero, CardPanel.transform);
-                    //IProduct product = m_CardFactories[0].GetProduct(Vector2.zero, CardPanel.transform);
+                    UI_RhythmCard card = character as UI_RhythmCard;
+
+                    m_CardHand.Add(card);
                 }
                 catch (DequeEmptyException)
                 {
@@ -49,9 +59,21 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
-        public bool IsRead
+        public void DeselectAllCard()
         {
-            get; private set;
+            foreach (UI_RhythmCard card in m_CardHand)
+            {
+                card.OnDeselected();
+            }
+        }
+
+        public void DeselectAllCardExcept(UI_RhythmCard except)
+        {
+            foreach (UI_RhythmCard card in m_CardHand)
+            {
+                if (card != except)
+                    card.OnDeselected();
+            }
         }
 
         private void InitManager()
@@ -82,7 +104,9 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
             for (int i = 0; i < count; i++)
             {
-                RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(0, cardTypeCount);
+                //RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(0, cardTypeCount);
+                RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(0, 1);
+                //RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(3, 4);
 
                 cardDeck.EnqueueFront(randomCard);
             }

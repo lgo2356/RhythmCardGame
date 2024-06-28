@@ -1,21 +1,20 @@
-using DarkChocoSoft.RhythmCardGame.Interface;
-using DarkChocoSoft.RhythmCardGame.Character;
-using DarkChocoSoft.RhythmCardGame.Manager;
 using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Module
 {
     public class CatCharacterFactory : CharacterFactory
     {
-        public override ICharacter GetCharacter(Vector2 pos, Transform parent)
+        public override Character GetCharacter(GameObject prefab, Vector2 pos, Transform parent)
         {
-            GameObject prefab = BattleSceneGameManager.Instance.SceneData.MonsterCharacterPrefab;
-            CatCharacter character = Instantiate(prefab, parent)
+            //GameObject prefab = BattleSceneGameManager.Instance.SceneData.MonsterCharacterPrefab;
+            CatCharacter cat = Instantiate(prefab, parent)
                 .AddComponent<CatCharacter>();
 
-            character.LoadConfig("Assets/05. Data/Character/CatCharacterConfig.asset");
+            cat.transform.SetParent(parent);
+            cat.transform.position = pos;
+            cat.LoadConfig("Assets/05. Data/Character/CatCharacterConfig.asset");
 
-            return character;
+            return cat;
         }
     }
 }

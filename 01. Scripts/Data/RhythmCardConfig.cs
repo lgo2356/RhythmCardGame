@@ -10,6 +10,6 @@ namespace DarkChocoSoft.RhythmCardGame.Data
         public Sprite FrameSprite;
         public Sprite CardSprite;
         public Color BackgroundColor;
-        public int NoteCount;
+        public int RhythmDifficulty;
     }
 }

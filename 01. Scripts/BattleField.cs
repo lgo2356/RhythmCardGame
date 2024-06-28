@@ -1,34 +1,26 @@
-using DarkChocoSoft.RhythmCardGame.Const;
-using DarkChocoSoft.RhythmCardGame.Manager;
 using UnityEngine;
 
-public class BattleField : MonoBehaviour
+namespace DarkChocoSoft.RhythmCardGame
 {
-    private void InstantiateCharacter()
+    public class BattleField : MonoBehaviour
     {
-        GameObject playerPrefab = BattleSceneGameManager.Instance.SceneData.PlayerCharacterPrefab;
-        GameObject monsterPrefab = BattleSceneGameManager.Instance.SceneData.MonsterCharacterPrefab;
+        [SerializeField] private RectTransform m_PlayerPositionTransform;
+        [SerializeField] private RectTransform m_MonsterPositionTransform;
 
-        Debug.Log("playerPrefab: " + playerPrefab.name);
-        Debug.Log("monsterPrefab: " + monsterPrefab.name);
+        public Transform PlayerPositionTransform
+        {
+            get
+            {
+                return m_PlayerPositionTransform;
+            }
+        }
 
-        //TODO : Character Factory »ý¼º
-
-        //ResourceManager.Instance.InstantiateAsync("Assets/04. Prefabs/Character/PlayerCharacter.prefab", transform, (obj) =>
-        //{
-        //    PlayerCharacter playerCharacter = obj.GetComponent<PlayerCharacter>();
-        //    playerCharacter.Load(CharacterType.Slime);
-        //});
-
-        //ResourceManager.Instance.InstantiateAsync("Assets/04. Prefabs/Character/MonsterCharacter.prefab", transform, (obj) =>
-        //{
-        //    MonsterCharacter monsterCharacter = obj.GetComponent<MonsterCharacter>();
-        //    monsterCharacter.Load(CharacterType.Cat);
-        //});
-    }
-
-    private void Start()
-    {
-        //InstantiateCharacter();
+        public Transform MonsterPositionTransform
+        {
+            get
+            {
+                return m_MonsterPositionTransform;
+            }
+        }
     }
 }

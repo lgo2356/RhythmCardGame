@@ -7,8 +7,17 @@ public class RhythmNoteHitTimingManager : MonoBehaviour
     [SerializeField] Transform m_NoteHitZoneTransform;
     [SerializeField] RectTransform[] m_NoteHitBoxRects;
 
-    public List<RhythmNote> m_RhythmNoteInstances = new();
+    List<RhythmNote> m_RhythmNoteInstances = new();
     Vector2[] m_NoteHitBoxs;
+
+    private int m_HitCount = 0;
+    private int m_TotalScore = 0;
+
+    public float HitRatio
+    {
+        get;
+        private set;
+    } = 0f;
 
     public void CheckHitTiming()
     {
@@ -18,12 +27,39 @@ public class RhythmNoteHitTimingManager : MonoBehaviour
         RhythmNote note = m_RhythmNoteInstances[0];
         float notePosX = note.transform.localPosition.x;
 
+        //TODO : Note 타입에 따라 다르게 처리
+
         for (int i = 0; i < m_NoteHitBoxs.Length; i++)
         {
             if (m_NoteHitBoxs[i].x <= notePosX && notePosX <= m_NoteHitBoxs[i].y)
             {
                 m_RhythmNoteInstances.Remove(note);
                 note.Destroy();
+
+                switch (i)
+                {
+                    case 0:
+                        m_TotalScore += 100;
+                        break;
+
+                    case 1:
+                        m_TotalScore += 80;
+                        break;
+
+                    case 2:
+                        m_TotalScore += 60;
+                        break;
+
+                    case 3:
+                        m_TotalScore += 40;
+                        break;
+
+                    case 4:
+                        m_TotalScore += 20;
+                        break;
+                }
+
+                RecordHitRating();
 
                 return;
             }
@@ -33,6 +69,14 @@ public class RhythmNoteHitTimingManager : MonoBehaviour
     public void CheckReleaseTiming()
     {
         
+    }
+
+    private void RecordHitRating()
+    {
+        m_HitCount++;
+        HitRatio = m_TotalScore / m_HitCount;
+
+        Debug.Log(HitRatio);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -46,7 +90,12 @@ public class RhythmNoteHitTimingManager : MonoBehaviour
         RhythmNote note = collision.GetComponent<RhythmNote>();
         m_RhythmNoteInstances.Remove(note);
 
-        Debug.Log("Break!");
+        if (collision.gameObject.activeSelf)
+        {
+            Debug.Log("Break!");
+            
+            RecordHitRating();
+        }
     }
 
     void Awake()
