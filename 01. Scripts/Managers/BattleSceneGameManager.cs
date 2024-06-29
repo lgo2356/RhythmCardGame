@@ -2,6 +2,8 @@ using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
 using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
+using DarkChocoSoft.RhythmCardGame.UI;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,8 +28,31 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         private const string MANAGER_NAME = "[ GameManager ]";
 
         private int m_SelectedCardSequence = -1;
+        private UI_BattleScreen m_UIRoot;
         private CharacterManager m_CharacterModule;
         private BattleManager m_BattleModule;
+
+        public UI_BattleScreen UIRoot
+        {
+            get
+            {
+                if (m_UIRoot == null)
+                {
+                    GameObject instance = GameObject.Find("[ UI ]");
+
+                    if (instance != null) 
+                    {
+                        m_UIRoot = instance.GetOrAddComponent<UI_BattleScreen>();
+                    }
+                    else
+                    {
+                        throw new System.Exception("UI_BattleScreen가 없습니다.");
+                    }
+                }
+
+                return m_UIRoot;
+            }
+        }
 
         public CharacterManager CharacterModule
         {
@@ -49,6 +74,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 if (m_BattleModule == null)
                 {
                     m_BattleModule = gameObject.GetOrAddComponent<BattleManager>();
+                    m_BattleModule.InjectUI(UIRoot.TurnButton, UIRoot.CardButton);
+                    m_BattleModule.InjectCharacter(CharacterModule.Player, CharacterModule.Monster);
                 }
 
                 return m_BattleModule;
@@ -65,32 +92,39 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             get; set;
         }
 
-        public Dictionary<int, RhythmCardData> RhythmCardComboDic
-        {
-            get; set;
-        } = new();
-
-        public int SelectedCardSequence
-        {
-            get
-            {
-                m_SelectedCardSequence++;
-
-                return m_SelectedCardSequence;
-            }
-
-            set
-            { 
-                m_SelectedCardSequence = value; 
-            }
+        public void NextTurn()
+        {             
+            BattleModule.NextTurn();
         }
 
+        public void StartGame()
+        {
+            StartCoroutine(StartGameCoroutine());
+        }
+
+        // rhythmRatio range : 0 ~ 1
         public void DoBattle(float rhythmRatio)
         {
             //TODO: 각종 버프 디버프 적용
-            //TODO: 리듬 성공률에 따라 대미지 계산
 
-            CharacterModule.Player.Attack(CharacterModule.Monster, 10f);
+            int damage = (int)(CharacterModule.Player.Stat.AttackDamage * rhythmRatio);
+
+            StartCoroutine(DoBattleCoroutine(damage));
+        }
+
+        private IEnumerator StartGameCoroutine()
+        {
+            yield return new WaitForSeconds(1.0f);
+
+            RhythmCardManager.Instance.DrawCard(5);
+            BattleModule.GetFirstTurn();
+        }
+
+        private IEnumerator DoBattleCoroutine(int damage)
+        { 
+            yield return new WaitForSeconds(0.5f);
+
+            CharacterModule.Player.Attack(CharacterModule.Monster, damage);
         }
 
         protected override void Awake()
@@ -114,8 +148,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             CharacterModule.SpawnMonsterCharacter(
                 SceneData.MonsterCharacterType,
                 SceneData.MonsterCharacterPrefab);
-            
-            RhythmCardManager.Instance.DrawCard(5);
+
+            StartGame();
         }
     }
 }

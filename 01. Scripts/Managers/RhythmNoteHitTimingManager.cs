@@ -81,20 +81,24 @@ public class RhythmNoteHitTimingManager : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        RhythmNote note = collision.GetComponent<RhythmNote>();
-        m_RhythmNoteInstances.Add(note);
+        if (collision.TryGetComponent(out RhythmNote note))
+        {
+            m_RhythmNoteInstances.Add(note);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        RhythmNote note = collision.GetComponent<RhythmNote>();
-        m_RhythmNoteInstances.Remove(note);
-
-        if (collision.gameObject.activeSelf)
+        if (collision.TryGetComponent(out RhythmNote note))
         {
-            Debug.Log("Break!");
-            
-            RecordHitRating();
+            m_RhythmNoteInstances.Remove(note);
+
+            if (collision.gameObject.activeSelf)
+            {
+                Debug.Log("Break!");
+
+                RecordHitRating();
+            }
         }
     }
 

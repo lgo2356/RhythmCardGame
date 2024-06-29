@@ -14,5 +14,10 @@ namespace DarkChocoSoft.RhythmCardGame
                 m_CharacterImage.sprite = sprite;
             });
         }
+
+        public void InitStat()
+        {
+            m_Stat.Init(100, 10);
+        }
     }
 }

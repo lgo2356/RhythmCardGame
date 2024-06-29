@@ -10,7 +10,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 {
     public class RhythmManager : MonoBehaviour
     {
-        [SerializeField] EndRhythmNote m_EndRhythmNotePrefab;
+        [SerializeField] EndRhythmObject m_EndRhythmNotePrefab;
         [SerializeField] RectTransform m_RhythmNoteStartPositionTransform;
         [SerializeField] RhythmNoteHitTimingManager m_RhythmNoteHitTimingManager;
 
@@ -69,7 +69,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 PopupManager.Instance.HidePopup(PopupType.UI_RhythmPopup);
             }
 
-            float ratio = m_RhythmNoteHitTimingManager.HitRatio;
+            float ratio = m_RhythmNoteHitTimingManager.HitRatio / 100f;
             BattleSceneGameManager.Instance.DoBattle(ratio);
         }
 
@@ -126,10 +126,10 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
             Debug.Log($"Beat End ratio : {m_RhythmNoteHitTimingManager.HitRatio}");
 
-            EndRhythmNote endRhythmNote = Instantiate(m_EndRhythmNotePrefab, UICanvas);
+            EndRhythmObject endRhythmNote = Instantiate(m_EndRhythmNotePrefab, UICanvas);
             endRhythmNote.transform.position = noteStartPosition;
-            endRhythmNote.InitRhythmNote(noteData);
-            endRhythmNote.SetOnDestroyListener(OnEndRhythmNoteDestory);
+            endRhythmNote.Speed = noteData.Speed;
+            endRhythmNote.SetOnDestroyListener(OnEndRhythmObjectDestory);
             endRhythmNote.StartMove();
         }
 
@@ -148,10 +148,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             //TODO : 각 팩토리에 필요한 데이터 주입하기
         }
 
-        private void OnEndRhythmNoteDestory(RhythmNote note)
+        private void OnEndRhythmObjectDestory()
         {
-            Destroy(note.gameObject);
-
             StopRhythm();
         }
 
