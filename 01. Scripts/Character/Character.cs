@@ -1,5 +1,6 @@
 using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Manager;
+using DarkChocoSoft.RhythmCardGame.UI;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,12 +9,12 @@ namespace DarkChocoSoft.RhythmCardGame
 {
     public interface IAttackable
     {
-        public void Attack(Character defender, float damage);
+        public void Attack(Character defender, int damage);
     }
 
     public interface IDefenceable
     {
-        public void Defend(Character attacker, float damage);
+        public void Defend(Character attacker, int damage);
     }
 
     public abstract class Character : MonoBehaviour, IAttackable, IDefenceable
@@ -23,6 +24,7 @@ namespace DarkChocoSoft.RhythmCardGame
         protected Image m_CharacterImage;
         protected Animator m_Anim;
         protected Stat m_Stat;
+        protected UI_StatusPanel m_StatusPanel;
 
         public Stat Stat => m_Stat;
 
@@ -42,21 +44,32 @@ namespace DarkChocoSoft.RhythmCardGame
             });
         }
 
-        public void Attack(Character defender, float damage)
+        public void ConnectStatusPanel(UI_StatusPanel statusPanel)
+        {
+            m_StatusPanel = statusPanel;
+            m_StatusPanel.InitHp(m_Stat.MaxHp);
+        }
+
+        public void Attack(Character defender, int damage)
         {
             Debug.Log("Attack : " + damage);
 
             StartCoroutine(AttackCoroutine(defender, damage));
         }
 
-        public void Defend(Character attacker, float damage)
+        public void Defend(Character attacker, int damage)
         {
             Debug.Log("Damaged : " + damage);
+
+            int currentHp = m_Stat.CurrentHp - damage;
+
+            m_Stat.SetCurrentHp(currentHp);
+            m_StatusPanel.SetCurrentHp(currentHp);
 
             m_Anim.SetTrigger("doTouch");
         }
 
-        private IEnumerator AttackCoroutine(Character defender, float damage)
+        private IEnumerator AttackCoroutine(Character defender, int damage)
         {
             m_Anim.SetTrigger("doTouch");
 

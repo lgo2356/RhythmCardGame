@@ -17,7 +17,7 @@ namespace DarkChocoSoft.RhythmCardGame
 
         public void InitStat()
         {
-            m_Stat.Init(100, 10);
+            m_Stat.Init(70, 10);
         }
     }
 }

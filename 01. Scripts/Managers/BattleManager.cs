@@ -90,6 +90,14 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         {
             yield return new WaitForSeconds(1.0f);
 
+            //TODO : 몬스터 AI 구현
+            /**
+             * 몬스터 행동패턴
+             * 1. 플레이어 공격하기
+             * 2. 플레이어 디버프 걸기
+             * 3. 리듬 디버프(노트 속도 느리게/빠르게 하기, 노트 투명하게 하기) 걸기
+             * 1번은 무조건 행동하고, 마나가 있으면 2, 3번 둘 중에 하나를 선택해서 사용한다.
+             */
             m_Monster.Attack(m_Player, m_Monster.Stat.AttackDamage);
 
             yield return new WaitForSeconds(1.5f);
