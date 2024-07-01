@@ -1,5 +1,6 @@
 using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
+using DarkChocoSoft.RhythmCardGame.UI;
 using System;
 using System.Collections;
 using System.IO;
@@ -50,7 +51,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         public void StartRhythm()
         {
-            RhythmCardData cardData = BattleSceneGameManager.Instance.SelectedCard;
+            UI_RhythmCard card = BattleSceneGameManager.Instance.RhythmCardModule.SelectedRhythmCard;
 
             //TODO: 리듬 난이도에 따라 비트 선택하기
 

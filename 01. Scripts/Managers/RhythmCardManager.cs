@@ -1,6 +1,5 @@
 using DarkChocoSoft.Algorithm.DataStructure;
 using DarkChocoSoft.Exception;
-using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
 using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
@@ -12,7 +11,7 @@ using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Manager
 {
-    public class RhythmCardManager : Singleton<RhythmCardManager>
+    public class RhythmCardManager : MonoBehaviour
     {
         private const string MANAGER_NAME = "[ RhythmCardManager ]";
 
@@ -34,9 +33,10 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
-        public bool IsRead
+        public UI_RhythmCard SelectedRhythmCard
         {
-            get; private set;
+            get;
+            private set;
         }
 
         public void DrawCard(int count = 1)
@@ -48,6 +48,9 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                     RhythmCardType cardType = m_CardDeck.DequeueFront();
                     IRhythmCard character = m_CardFactories[(int)cardType].GetRhythmCard(Vector2.zero, CardPanel.transform);
                     UI_RhythmCard card = character as UI_RhythmCard;
+                    card.SetOnSelectedListener(OnRhythmCardSelected);
+                    card.SetOnDeselectedListener(OnRhythmCardDeselected);
+                    card.SetOnUseListener(OnRhythmCardUse);
 
                     m_CardHand.Add(card);
                 }
@@ -57,6 +60,18 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                     Debug.LogError("뽑을 카드가 없습니다.");
                 }
             }
+        }
+
+        public void UseRhythmCard(UI_RhythmCard card)
+        {
+            m_CardHand.Remove(card);
+            card.Use();
+        }
+
+        public void DestroyRhythmCard(UI_RhythmCard card)
+        {
+            m_CardHand.Remove(card);
+            card.Destroy();
         }
 
         public void DeselectAllCard()
@@ -74,12 +89,6 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 if (card != except)
                     card.OnDeselected();
             }
-        }
-
-        private void InitManager()
-        {
-            RemoveDontDestroyOnLoad();
-            SetGameObjectName(MANAGER_NAME);
         }
 
         private void InitCardFactory()
@@ -114,11 +123,23 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             return cardDeck;
         }
 
-        protected override void Awake()
+        private void OnRhythmCardSelected(UI_RhythmCard card)
         {
-            base.Awake();
+            SelectedRhythmCard = card;
+        }
 
-            InitManager();
+        private void OnRhythmCardDeselected(UI_RhythmCard card)
+        {
+            SelectedRhythmCard = null;
+        }
+
+        private void OnRhythmCardUse(UI_RhythmCard card)
+        {
+
+        }
+
+        private void Awake()
+        {
             InitCardFactory();
             InitCardDeck();
         }

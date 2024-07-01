@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame
 {
-    public class BattleField : MonoBehaviour
+    public class UI_BattleField : MonoBehaviour
     {
         [SerializeField] private RectTransform m_PlayerPositionTransform;
         [SerializeField] private RectTransform m_MonsterPositionTransform;

@@ -1,10 +1,8 @@
 using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
-using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
 using DarkChocoSoft.RhythmCardGame.UI;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Manager
@@ -27,12 +25,12 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
     {
         private const string MANAGER_NAME = "[ GameManager ]";
 
-        private int m_SelectedCardSequence = -1;
-        private UI_BattleScreen m_UIRoot;
+        private UI_BattleSceneRoot m_UIRoot;
         private CharacterManager m_CharacterModule;
         private BattleManager m_BattleModule;
+        private RhythmCardManager m_RhythmCardModule;
 
-        public UI_BattleScreen UIRoot
+        public UI_BattleSceneRoot UIRoot
         {
             get
             {
@@ -42,7 +40,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
                     if (instance != null) 
                     {
-                        m_UIRoot = instance.GetOrAddComponent<UI_BattleScreen>();
+                        m_UIRoot = instance.GetOrAddComponent<UI_BattleSceneRoot>();
                     }
                     else
                     {
@@ -61,6 +59,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 if (m_CharacterModule == null)
                 {
                     m_CharacterModule = gameObject.GetOrAddComponent<CharacterManager>();
+                    m_CharacterModule.InjectStatusPanel(UIRoot.PlayerStatusPanel, UIRoot.MonsterStatusPanel);
                 }
 
                 return m_CharacterModule;
@@ -82,24 +81,38 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
+        public RhythmCardManager RhythmCardModule
+        {
+            get
+            {
+                if (m_RhythmCardModule == null)
+                {
+                    m_RhythmCardModule = gameObject.GetOrAddComponent<RhythmCardManager>();
+                }
+
+                return m_RhythmCardModule;
+            }
+        }
+
         public BattleSceneData SceneData
         {
             get; private set;
         }
 
-        public RhythmCardData SelectedCard
-        { 
-            get; set;
-        }
-
-        public void NextTurn()
-        {             
-            BattleModule.NextTurn();
-        }
-
         public void StartGame()
         {
             StartCoroutine(StartGameCoroutine());
+        }
+
+        public void UseRhythmCard()
+        {
+            if (RhythmCardModule.SelectedRhythmCard == null)
+            {
+                Debug.Log("선택된 카드가 없습니다.");
+                return;
+            }
+
+            StartCoroutine(UseRhythmCardCoroutine());
         }
 
         // rhythmRatio range : 0 ~ 1
@@ -114,10 +127,10 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         private IEnumerator StartGameCoroutine()
         {
-            yield return new WaitForSeconds(1.0f);
-
-            RhythmCardManager.Instance.DrawCard(5);
+            RhythmCardModule.DrawCard(5);
             BattleModule.GetFirstTurn();
+
+            yield return null;
         }
 
         private IEnumerator DoBattleCoroutine(int damage)
@@ -125,6 +138,15 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             yield return new WaitForSeconds(0.5f);
 
             CharacterModule.Player.Attack(CharacterModule.Monster, damage);
+        }
+
+        private IEnumerator UseRhythmCardCoroutine()
+        {
+            yield return null;
+
+            RhythmCardModule.UseRhythmCard(RhythmCardModule.SelectedRhythmCard);
+
+            PopupManager.Instance.ShowPopup(PopupType.UI_RhythmPopup);
         }
 
         protected override void Awake()
@@ -143,11 +165,15 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         {
             CharacterModule.SpawnPlayerCharacter(
                 SceneData.PlayerCharacterType,
-                SceneData.PlayerCharacterPrefab);
+                SceneData.PlayerCharacterPrefab,
+                UIRoot.BattleField.PlayerPositionTransform.position,
+                UIRoot.BattleField.transform);
 
             CharacterModule.SpawnMonsterCharacter(
                 SceneData.MonsterCharacterType,
-                SceneData.MonsterCharacterPrefab);
+                SceneData.MonsterCharacterPrefab,
+                UIRoot.BattleField.MonsterPositionTransform.position,
+                UIRoot.BattleField.transform);
 
             StartGame();
         }

@@ -2,6 +2,7 @@ using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Manager;
 using DG.Tweening;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -23,6 +24,9 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         RhythmCardData m_Data;
         float m_CardScale = 1f;
         bool m_IsSelected = false;
+        Action<UI_RhythmCard> m_OnSelectedAction;
+        Action<UI_RhythmCard> m_OnDeselectedAction;
+        Action<UI_RhythmCard> m_OnUseAction;
 
         public virtual void OnPointerClick(PointerEventData eventData)
         {
@@ -30,7 +34,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
 
             if (m_IsSelected)
             {
-                RhythmCardManager.Instance.DeselectAllCardExcept(this);
+                BattleSceneGameManager.Instance.RhythmCardModule.DeselectAllCardExcept(this);
 
                 OnSelected();
             }
@@ -85,15 +89,42 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             });
         }
 
+        public void Use()
+        {
+            m_OnUseAction?.Invoke(this);
+
+            Destroy();
+        }
+
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
+
+        public void SetOnSelectedListener(Action<UI_RhythmCard> callback)
+        {
+            m_OnSelectedAction -= callback;
+            m_OnSelectedAction += callback;
+        }
+
+        public void SetOnDeselectedListener(Action<UI_RhythmCard> callback)
+        {
+            m_OnDeselectedAction -= callback;
+            m_OnDeselectedAction += callback;
+        }
+
+        public void SetOnUseListener(Action<UI_RhythmCard> callback)
+        {
+            m_OnUseAction -= callback;
+            m_OnUseAction += callback;
+        }
+
         public void OnSelected()
         {
             m_IsSelected = true;
             m_CardScale = 1.1f;
 
-            BattleSceneGameManager.Instance.SelectedCard = m_Data;
-
-            //BattleSceneGameManager.Instance.RhythmCardComboDic
-            //    .Add(BattleSceneGameManager.Instance.SelectedCardSequence, m_Data);
+            m_OnSelectedAction?.Invoke(this);
         }
 
         public void OnDeselected()
@@ -109,10 +140,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             m_CurTween = transform.DOScale(m_CardScale, 0.2f)
                 .SetEase(Ease.InOutSine);
 
-            BattleSceneGameManager.Instance.SelectedCard = default;
-
-            //BattleSceneGameManager.Instance.RhythmCardComboDic
-            //    .Remove(BattleSceneGameManager.Instance.SelectedCardSequence);
+            m_OnDeselectedAction?.Invoke(this);
         }
 
         protected virtual void Awake()
@@ -126,6 +154,14 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         protected virtual void Start()
         {
             
+        }
+
+        private void OnDestroy()
+        {
+            m_OnSelectedAction = null;
+            m_OnDeselectedAction = null;
+            m_OnUseAction = null;
+            m_CurTween = null;
         }
     }
 }
