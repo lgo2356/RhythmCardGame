@@ -1,0 +1,22 @@
+{
+  "pages": [
+    {
+      "type": "Slime",
+      "name_en": "Slime",
+      "name_kr": "슬라임",
+      "img_path": "Assets/Bolt 2D JellyFarm VE2/Sprites/InGame/Jelly 0.png"
+    },
+    {
+      "type": "Pink",
+      "name_en": "Pink",
+      "name_kr": "핑크",
+      "img_path": "Assets/Bolt 2D JellyFarm VE2/Sprites/InGame/Jelly 1.png"
+    },
+    {
+      "type": "Grape",
+      "name_en": "Grape",
+      "name_kr": "포도",
+      "img_path": "Assets/Bolt 2D JellyFarm VE2/Sprites/InGame/Jelly 2.png"
+    }
+  ]
+}

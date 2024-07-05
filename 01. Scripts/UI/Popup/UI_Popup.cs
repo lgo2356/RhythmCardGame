@@ -1,3 +1,4 @@
+using DarkChocoSoft.RhythmCardGame.Manager;
 using System;
 using UnityEngine;
 
@@ -36,9 +37,38 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             OnHideAction = callback;
         }
 
+        protected virtual void ShowBlocker()         
+        {
+            GameObject blocker = GameObject.Find("UI_Blocker");
+
+            if (blocker == null)
+            {
+                ResourceManager.Instance.InstantiateAsync("Assets/04. Prefabs/UI/Popup/UI_Blocker.prefab", transform.root, (obj) =>
+                {
+                    obj.transform.SetSiblingIndex(transform.GetSiblingIndex());
+                });
+            }
+            else
+            {
+                blocker.SetActive(true);
+            }
+        }
+
+        protected virtual void HideBlocker()
+        {
+            GameObject blocker = GameObject.Find("UI_Blocker");
+
+            if (blocker != null)
+            {
+                blocker.SetActive(false);
+            }
+        }
+
         protected virtual void OnShow()
         {
             Debug.Log($"{gameObject.name} Show");
+
+            ShowBlocker();
 
             OnShowAction?.Invoke();
         }
@@ -47,7 +77,14 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         {
             Debug.Log($"{gameObject.name} Hide");
 
+            HideBlocker();
+
             OnHideAction?.Invoke();
+        }
+
+        protected virtual void OnBlockerClick()
+        {
+            Hide();
         }
 
         protected virtual void Awake()
