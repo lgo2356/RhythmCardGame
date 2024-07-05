@@ -1,4 +1,5 @@
 using DarkChocoSoft.RhythmCardGame.Manager;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 

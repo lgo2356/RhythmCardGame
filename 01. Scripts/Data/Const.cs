@@ -6,7 +6,7 @@ namespace DarkChocoSoft.RhythmCardGame.Const
      */
     public enum CharacterName
     {
-        Slime,
+        Slime, Pink, Grape,
         Cat,
     }
 

@@ -20,16 +20,19 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         public void InitHp(int value)
         {
             m_HpText.InitHp(value);
+            m_HpBar.InitHp(value);
         }
 
         public void SetMaxHp(int value)
         {
             m_HpText.SetMaxHp(value);
+            m_HpBar.SetMaxHp(value);
         }
 
         public void SetCurrentHp(int value)
         {
             m_HpText.SetCurrentHp(value);
+            m_HpBar.SetCurrentHp(value);
         }
 
         public void Refresh()
