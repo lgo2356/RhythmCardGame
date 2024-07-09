@@ -8,6 +8,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
     {
         public Action OnShowAction;
         public Action OnHideAction;
+        public Action OnBackgroundClickAction;
 
         public void Show()
         {
@@ -29,46 +30,27 @@ namespace DarkChocoSoft.RhythmCardGame.UI
 
         public void SetOnShowListener(Action callback)
         {
-            OnShowAction = callback;
+            OnShowAction += callback;
         }
 
         public void SetOnHideListener(Action callback)
         {
-            OnHideAction = callback;
+            OnHideAction += callback;
         }
 
-        protected virtual void ShowBlocker()         
+        public void SetOnBackgroundClickListener(Action callback)
         {
-            GameObject blocker = GameObject.Find("UI_Blocker");
-
-            if (blocker == null)
-            {
-                ResourceManager.Instance.InstantiateAsync("Assets/04. Prefabs/UI/Popup/UI_Blocker.prefab", transform.root, (obj) =>
-                {
-                    obj.transform.SetSiblingIndex(transform.GetSiblingIndex());
-                });
-            }
-            else
-            {
-                blocker.SetActive(true);
-            }
+            OnBackgroundClickAction += callback;
         }
 
-        protected virtual void HideBlocker()
+        public void OnBackgroundClick()
         {
-            GameObject blocker = GameObject.Find("UI_Blocker");
-
-            if (blocker != null)
-            {
-                blocker.SetActive(false);
-            }
+            OnBackgroundClickAction?.Invoke();
         }
 
         protected virtual void OnShow()
         {
             Debug.Log($"{gameObject.name} Show");
-
-            ShowBlocker();
 
             OnShowAction?.Invoke();
         }
@@ -77,14 +59,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         {
             Debug.Log($"{gameObject.name} Hide");
 
-            HideBlocker();
-
             OnHideAction?.Invoke();
-        }
-
-        protected virtual void OnBlockerClick()
-        {
-            Hide();
         }
 
         protected virtual void Awake()
@@ -101,6 +76,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         { 
             OnShowAction = null;
             OnHideAction = null;
+            OnBackgroundClickAction = null;
         }
     }
 }

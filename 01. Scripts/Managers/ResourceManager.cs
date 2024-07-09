@@ -18,7 +18,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             return clone;
         }
 
-        public void InstantiateAsync(string path, Transform parent, Action < GameObject> callback)
+        public void InstantiateAsync(string path, Transform parent, Action<GameObject> callback)
         {
             Addressables.InstantiateAsync(path, parent).Completed += (obj) =>
             {

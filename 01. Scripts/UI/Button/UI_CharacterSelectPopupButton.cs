@@ -5,8 +5,6 @@ namespace DarkChocoSoft.RhythmCardGame.UI
 {
     public class UI_CharacterSelectPopupButton : UI_Button
     {
-        public UI_CharacterSelectPopup CharacterSelectPopup;
-
         public override void OnPointerClick(PointerEventData eventData)
         {
             base.OnPointerClick(eventData);
@@ -49,14 +47,6 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         {
             IsSelected = false;
             m_Image.sprite = NormalSprite;
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-
-            CharacterSelectPopup?.SetOnShowListener(OnCharacterPopupShow);
-            CharacterSelectPopup?.SetOnHideListener(OnCharacterPopupHide);
         }
     }
 }

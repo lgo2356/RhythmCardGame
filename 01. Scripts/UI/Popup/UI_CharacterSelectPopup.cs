@@ -1,6 +1,7 @@
 using DarkChocoSoft.Algorithm;
 using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Manager;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
@@ -9,6 +10,7 @@ using UnityEngine.UI;
 
 namespace DarkChocoSoft.RhythmCardGame.UI
 {
+    [Obsolete("삭제 예정")]
     public class UI_CharacterSelectPopup : UI_Popup
     {
         [SerializeField] private Button m_LeftPageButton;
@@ -18,8 +20,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         [SerializeField] private TextMeshProUGUI m_CharacterNameText;
 
         private CircularList<CharacterSelectPageData> m_PageDatas;
-        private CharacterSelectPageData m_CurrentPageData;
-        
+        private CharacterSelectPageData m_CurrentPageData;        
 
         public void OnLeftButtonClick()
         { 
@@ -118,6 +119,13 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             base.Awake();
 
             LoadPopupData();
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+
+            SetOnBackgroundClickListener(Hide);
         }
     }
 }

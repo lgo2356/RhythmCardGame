@@ -29,6 +29,20 @@ namespace DarkChocoSoft.RhythmCardGame.Module
             };
         }
 
+        public BattleSceneLoader SetPrefsData(string key, string value)
+        {
+            PlayerPrefs.SetString(key, value);
+
+            return this;
+        }
+
+        public BattleSceneLoader SetPrefsData(string key, int value)
+        {
+            PlayerPrefs.SetInt(key, value);
+
+            return this;
+        }
+
         public IEnumerator LoadSceneAsyncCoroutine(string sceneName)
         {
             AsyncOperation asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName);
