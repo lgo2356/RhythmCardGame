@@ -32,6 +32,19 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                     if (Enum.TryParse<PopupType>(uiPopup.GetType().Name, out var popupType))
                     {
                         LoadedPopups.Add(popupType, uiPopup);
+
+                        uiPopup.SetOnShowListener(() =>
+                        {
+                            if (!m_ShowingPopupsDic.ContainsKey(popupType))
+                            {
+                                m_ShowingPopupsDic.Add(popupType, uiPopup);
+                            }
+                        });
+
+                        uiPopup.SetOnHideListener(() =>
+                        {
+                            m_ShowingPopupsDic.Remove(popupType);
+                        });
                     }
                 }
                 else
@@ -50,6 +63,19 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                     if (Enum.TryParse<PopupType>(uiPopup.GetType().Name, out var popupType))
                     {
                         LoadedPopups.Add(popupType, uiPopup);
+
+                        uiPopup.SetOnShowListener(() =>
+                        {
+                            if (!m_ShowingPopupsDic.ContainsKey(popupType))
+                            {
+                                m_ShowingPopupsDic.Add(popupType, uiPopup);
+                            }
+                        });
+
+                        uiPopup.SetOnHideListener(() =>
+                        {
+                            m_ShowingPopupsDic.Remove(popupType);
+                        });
                     }
                 }
                 else
@@ -79,7 +105,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             LoadedPopups.Clear();
         }
 
-        public void ShowPopup(PopupType popupType)
+        public UI_Popup ShowPopup(PopupType popupType, Action onShow = null)
         {
             UI_Popup uiPopup = LoadedPopups[popupType];
 
@@ -88,12 +114,13 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 throw new System.Exception("로드된 팝업이 없습니다.");
             }
 
+            uiPopup.SetOnShowListener(onShow);
             uiPopup.Show();
 
-            m_ShowingPopupsDic.Add(popupType, uiPopup);
+            return uiPopup;
         }
 
-        public void HidePopup(PopupType popup)
+        public void HidePopup(PopupType popup, Action onHide = null)
         {
             UI_Popup uiPopup = m_ShowingPopupsDic[popup];
 
@@ -102,9 +129,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 throw new System.Exception("띄워진 팝업이 없습니다.");
             }
 
+            uiPopup.SetOnHideListener(onHide);
             uiPopup.Hide();
-            
-            m_ShowingPopupsDic.Remove(popup);
         }
 
         public void HideAllPopup()
@@ -117,13 +143,11 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             m_ShowingPopupsDic.Clear();
         }
 
-        public UI_Popup GetPopup<T>() where T : UI_Popup
+        public T GetPopup<T>(PopupType popupType) where T : UI_Popup
         {
-            PopupType popupType = (PopupType)Enum.Parse(typeof(PopupType), typeof(T).Name);
-
-            if (m_ShowingPopupsDic.ContainsKey(popupType))
+            if (LoadedPopups.ContainsKey(popupType))
             {
-                return m_ShowingPopupsDic[popupType];
+                return (T)LoadedPopups[popupType];
             }
 
             return null;

@@ -1,4 +1,4 @@
-using DarkChocoSoft.RhythmCardGame.Manager;
+using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.UI;
 using UnityEngine;
 
@@ -8,12 +8,12 @@ namespace DarkChocoSoft.RhythmCardGame.Module
     {
         protected Vector2 m_Position;
         protected Transform m_Parent;
-        protected string m_ConfigPath;
         protected GameObject m_Prefab;
+        protected RhythmCardDto m_Data;
 
         public abstract void SetPositionAndParent(Vector2 position, Transform parent);
-        public abstract void SetConfig(string configPath);
         public abstract void SetPrefab(GameObject prefab);
+        public abstract void SetData(RhythmCardDto data);
         protected abstract UI_RhythmCard Create();
 
         public UI_RhythmCard Get()
@@ -24,18 +24,13 @@ namespace DarkChocoSoft.RhythmCardGame.Module
             if (m_Parent == null)
                 throw new System.Exception("Parent is not set.");
 
-            if (m_ConfigPath == null)
-                throw new System.Exception("Config path is not set.");
-
             if (m_Prefab == null)
                 throw new System.Exception("Prefab is not set.");
 
-            UI_RhythmCard card = Create();
+            if (m_Data == null)
+                throw new System.Exception("Data is not set.");
 
-            ResourceManager.Instance.LoadAsync<ScriptableObject>(m_ConfigPath, (config) =>
-            {
-                card.SetConfig(config);
-            });
+            UI_RhythmCard card = Create();
 
             return card;
         }
