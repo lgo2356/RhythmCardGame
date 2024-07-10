@@ -490,6 +490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_HpSlider: {fileID: 121748052}
+  m_HpReduceSpeed: 0.3
 --- !u!222 &432679865
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2179,6 +2180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 599a0304f0517b24fbbe3922fb0714ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_RhythmCardPrefab: {fileID: 4634935698509494648, guid: 8053098794861ef4bae6a21317f03610, type: 3}
 --- !u!114 &1593718554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2191,6 +2193,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9742b9fd19985ec40bfc482331aec5fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_PlayerPrefab: {fileID: 8684612208207774103, guid: 0ff07ff9ec324894e87d3cde8bd688e0, type: 3}
+  m_MonsterPrefab: {fileID: 2575058501322435904, guid: c5c8f5e5aa36438429fcbb04f15116d1, type: 3}
 --- !u!114 &1593718555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2592,6 +2596,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_HpSlider: {fileID: 36289302}
+  m_HpReduceSpeed: 0.3
 --- !u!1 &1924063321
 GameObject:
   m_ObjectHideFlags: 0

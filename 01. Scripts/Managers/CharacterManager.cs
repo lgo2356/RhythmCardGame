@@ -6,83 +6,21 @@ using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Manager
 {
-    public class CharacterBuilder
-    {
-        private GameObject m_Prefab;
-        private CharacterFactory m_Factory;
-        private Transform m_Parent;
-        private Vector2 m_Position;
-
-        public CharacterBuilder SetPrefab(GameObject prefab)
-        {
-            m_Prefab = prefab;
-            return this;
-        }
-
-        public CharacterBuilder SetFactory(CharacterFactory factory)
-        {
-            m_Factory = factory;
-            return this;
-        }
-
-        public CharacterBuilder SetParent(Transform parent) 
-        {
-            m_Parent = parent;
-            return this;
-        }
-
-        public CharacterBuilder SetPosition(Vector2 position)
-        {
-            m_Position = position;
-            return this;
-        }
-
-        public Character Build()
-        {
-            Character character = Instantiate();
-
-            return character;
-        }
-
-        private Character Instantiate()
-        {
-            if (m_Prefab == null)
-            {
-                throw new ArgumentNullException("Prefab is null.");
-            }
-
-            if (m_Factory == null)
-            {
-                throw new ArgumentNullException("Factory is null.");
-            }
-
-            if (m_Parent == null)
-            {
-                throw new ArgumentNullException("Parent is null.");
-            }
-
-            if (m_Position == null)
-            {
-                throw new ArgumentNullException("Position is null.");
-            }
-
-            Character character = m_Factory.GetCharacter(m_Prefab, m_Position, m_Parent);
-            return character;
-        }
-    }
-
     public class CharacterManager : MonoBehaviour
     {
+        [SerializeField] private GameObject m_PlayerPrefab;
+        [SerializeField] private GameObject m_MonsterPrefab;
+
         private CharacterFactory[] m_CharacterFactories;
         private UI_StatusPanel m_PlayerStatusPanel;
         private UI_StatusPanel m_MonsterStatusPanel;
 
-        public PlayerCharacter Player
+        public Character Player
         {
             get; private set;
         }
 
-        public MonsterCharacter Monster
+        public Character Monster
         {
             get; private set;
         }
@@ -93,56 +31,32 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             m_MonsterStatusPanel = monsterStatusPanel;
         }
 
-        public void SpawnPlayerCharacter(CharacterName name, GameObject prefab, Vector2 position, Transform parent)
+        public void SpawnPlayerCharacter(Vector2 position, Transform parent, string configPath)
         {
-            switch (name)
-            {
-                case CharacterName.Slime:
-                    {
-                        SlimeCharacterFactory factory = gameObject.GetOrAddComponent<SlimeCharacterFactory>();
+            Character character = new CharacterBuilder()
+                .SetPrefab(m_PlayerPrefab)
+                .SetParent(parent)
+                .SetPosition(position)
+                .SetConfig(configPath)
+                .SetStatusPanel(m_PlayerStatusPanel)
+                .Build();
 
-                        SlimeCharacter slime = new CharacterBuilder()
-                            .SetFactory(factory)
-                            .SetPrefab(prefab)
-                            .SetParent(parent)
-                            .SetPosition(position)
-                            .Build() as SlimeCharacter;
-
-                        m_PlayerStatusPanel.Connect(slime);
-                        
-                        Player = slime;
-                    }
-                    break;
-
-                default:
-                    throw new ArgumentException("Invalid character name.");
-            }
+            Player = character;
         }
 
-        public void SpawnMonsterCharacter(CharacterName name, GameObject prefab, Vector2 position, Transform parent)
+        public void SpawnMonsterCharacter(Vector2 position, Transform parent)
         {
-            switch (name)
-            {
-                case CharacterName.Cat:
-                    {
-                        CatCharacterFactory factory = gameObject.GetOrAddComponent<CatCharacterFactory>();
+            string configPath = "Assets/05. Data/Character/CatCharacterConfig.asset";
 
-                        CatCharacter cat = new CharacterBuilder()
-                            .SetFactory(factory)
-                            .SetPrefab(prefab)
-                            .SetParent(parent)
-                            .SetPosition(position)
-                            .Build() as CatCharacter;
+            Character character = new CharacterBuilder()
+                .SetPrefab(m_MonsterPrefab)
+                .SetParent(parent)
+                .SetPosition(position)
+                .SetConfig(configPath)
+                .SetStatusPanel(m_MonsterStatusPanel)
+                .Build();
 
-                        m_MonsterStatusPanel.Connect(cat);
-
-                        Monster = cat;
-                    }
-                    break;
-
-                default:
-                    throw new ArgumentException("Invalid character name.");
-            }
+            Monster = character;
         }
 
         private void InitCharacterFactory()

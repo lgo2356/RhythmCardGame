@@ -54,10 +54,33 @@ namespace DarkChocoSoft.RhythmCardGame.Module
                 PlayerCharacterType = (CharacterName)Enum.Parse(
                     typeof(CharacterName), 
                     PlayerPrefs.GetString(PlayerPrefsKey.PlayerCharacterName, string.Empty)),
-                MonsterCharacterType = (CharacterName)Enum.Parse(
-                    typeof(CharacterName),
-                    PlayerPrefs.GetString(PlayerPrefsKey.MonsterCharacterName, string.Empty)),
+                //MonsterCharacterType = (CharacterName)Enum.Parse(
+                //    typeof(CharacterName),
+                //    PlayerPrefs.GetString(PlayerPrefsKey.MonsterCharacterName, string.Empty)),
             };
+
+            CharacterName playerCharacterName = (CharacterName)Enum.Parse(typeof(CharacterName), PlayerPrefs.GetString(PlayerPrefsKey.PlayerCharacterName, string.Empty));
+
+            switch (playerCharacterName)
+            {
+                case CharacterName.Slime:
+                    {
+                        PlayerPrefs.SetString(PlayerPrefsKey.PlayerCharacterConfig, "Assets/05. Data/Character/SlimeCharacterConfig.asset");
+                    }
+                    break;
+
+                case CharacterName.Pink:
+                    {
+                        PlayerPrefs.SetString(PlayerPrefsKey.PlayerCharacterConfig, "Assets/05. Data/Character/PinkCharacterConfig.asset");
+                    }
+                    break;
+
+                case CharacterName.Grape:
+                    {
+                        PlayerPrefs.SetString(PlayerPrefsKey.PlayerCharacterConfig, "Assets/05. Data/Character/GrapeCharacterConfig.asset");
+                    }
+                    break;
+            }
 
             BattleSceneDataLoader dataLoader = new();
             dataLoader

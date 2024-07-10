@@ -9,5 +9,7 @@ namespace DarkChocoSoft.RhythmCardGame.Data
         public CharacterType CharacterType;
         public CharacterName CharacterName;
         public Sprite CharacterSprite;
+        public int MaxHp;
+        public int AttackDamage;
     }
 }

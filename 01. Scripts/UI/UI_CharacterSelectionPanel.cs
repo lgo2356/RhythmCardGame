@@ -48,6 +48,13 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             InitCharacterSelectionButtons(datas);
         }
 
+        private void OnButtonSelected(UI_CharacterSelectionButton button)
+        {
+            LobbySceneGameManager.Instance.SelectedCharacterType = button.GetCharacterName();
+
+            SetButtonNormalStateExcept(button);
+        }
+
         private void SetButtonNormalStateExcept(UI_CharacterSelectionButton exceptButton)
         {
             foreach (var button in GetComponentsInChildren<UI_CharacterSelectionButton>())
@@ -72,8 +79,9 @@ namespace DarkChocoSoft.RhythmCardGame.UI
                         button.SetCharacterSprite(sprite);
                     });
 
+                    button.SetData(data);
                     button.SetNormalState();
-                    button.SetOnSelectedListener(SetButtonNormalStateExcept);
+                    button.SetOnSelectedListener(OnButtonSelected);
                 }
                 else
                 {

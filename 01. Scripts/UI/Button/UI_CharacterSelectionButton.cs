@@ -1,3 +1,5 @@
+using DarkChocoSoft.RhythmCardGame.Const;
+using DarkChocoSoft.RhythmCardGame.Data;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,6 +13,19 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         [SerializeField] private Image m_CharacterImage;
 
         private Action<UI_CharacterSelectionButton> m_OnSelectedAction;
+        private CharacterSelectPageData m_Data;
+
+        public void SetData(CharacterSelectPageData data)
+        { 
+            m_Data = data;
+        }
+
+        public CharacterName GetCharacterName()
+        {
+            CharacterName characterName = Enum.Parse<CharacterName>(m_Data.type);
+
+            return characterName;
+        }
 
         public void SetCharacterSprite(Sprite sprite)
         {
