@@ -79,7 +79,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             LoadedPopups.Clear();
         }
 
-        public void ShowPopup(PopupType popupType)
+        public UI_Popup ShowPopup(PopupType popupType)
         {
             UI_Popup uiPopup = LoadedPopups[popupType];
 
@@ -91,6 +91,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             uiPopup.Show();
 
             m_ShowingPopupsDic.Add(popupType, uiPopup);
+
+            return uiPopup;
         }
 
         public void HidePopup(PopupType popup)

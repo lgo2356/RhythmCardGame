@@ -1,3 +1,4 @@
+using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
 using DarkChocoSoft.RhythmCardGame.UI;
@@ -49,15 +50,9 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
-        public void StartRhythm()
+        public void StartRhythm(RhythmNoteDto[] rhythmDatas)
         {
-            UI_RhythmCard card = BattleSceneGameManager.Instance.RhythmCardModule.SelectedRhythmCard;
-
-            //TODO: 리듬 난이도에 따라 비트 선택하기
-
-            BeatData beatData = GetDummyBeat();
-
-            m_GenerateRhythmNoteCoroutine = StartCoroutine(BeatCoroutine(beatData));
+            m_GenerateRhythmNoteCoroutine = StartCoroutine(BeatCoroutine(rhythmDatas));
         }
 
         public void StopRhythm()
@@ -76,12 +71,12 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         public void StartTestRhythm()
         {
-            BeatData beatData = GetTestBeat();
+            //BeatData beatData = GetTestBeat();
 
-            m_GenerateRhythmNoteCoroutine = StartCoroutine(BeatCoroutine(beatData));
+            //m_GenerateRhythmNoteCoroutine = StartCoroutine(BeatCoroutine(beatData));
         }
 
-        private IEnumerator BeatCoroutine(BeatData beatData)
+        private IEnumerator BeatCoroutine(RhythmNoteDto[] notes)
         {
             Vector2 noteStartPosition = m_RhythmNoteStartPositionTransform.position;
 
@@ -95,17 +90,17 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
             int i = 0;
 
-            while (i < beatData.total)
+            while (i < notes.Length)
             {
                 timer += Time.deltaTime;
 
                 if (timer >= tempo)
                 {
-                    switch (beatData.notes[i].type)
+                    switch (notes[i].type)
                     {
                         case "normal":
                             {
-                                noteData.NoteCount = beatData.notes[i].count;
+                                noteData.NoteCount = notes[i].count;
 
                                 RhythmNoteFactory factory = m_RhythmNoteFactories[0];
                                 factory.GenerateRhythmNote(tempo, noteData, noteStartPosition, UICanvas);
@@ -209,7 +204,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
                 if (GUILayout.Button("Test Rhythm"))
                 {
-                    rhythmNoteManager.StartTestRhythm();
+                    //rhythmNoteManager.StartTestRhythm();
                 }
 
                 if (GUILayout.Button("Stop Rhythm"))

@@ -50,9 +50,9 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                     RhythmCardDto cardData = m_Deck.DequeueFront();
 
                     DefaultRhythmCardCreator creator = gameObject.GetOrAddComponent<DefaultRhythmCardCreator>();
-                    creator.SetPositionAndParent(Vector2.zero, CardPanel.transform);
-                    creator.SetConfig(cardData.config_path);
                     creator.SetPrefab(m_RhythmCardPrefab);
+                    creator.SetPositionAndParent(Vector2.zero, CardPanel.transform);
+                    creator.SetData(cardData);
 
                     UI_RhythmCard card = creator.Get();
                     card.SetOnSelectedListener(OnRhythmCardSelect);
@@ -69,18 +69,26 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
-        public void UseRhythmCards()
+        public RhythmCardDto[] UseRhythmCards()
         {
             if (m_CardSelectQueue == null || m_CardSelectQueue.Count == 0)
             {
                 Debug.Log("선택된 카드가 없습니다.");
-                return;
+                return null;
             }
+
+            RhythmCardDto[] temp = new RhythmCardDto[m_CardSelectQueue.Count];
+            int i = 0;
 
             while (m_CardSelectQueue.TryDequeue(out var card))
             {
                 UseRhythmCard(card);
+
+                temp[i] = card.Data;
+                i++;
             }
+
+            return temp;
         }
 
         public void UseRhythmCard(UI_RhythmCard card)
@@ -119,7 +127,6 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         private Deque<RhythmCardDto> GenerateCardDeck(int count)
         {
-            //Deque<RhythmCardType> cardDeck = new();
             RhythmCardDto[] datas = LoadRhythmCardDto();
             Deque<RhythmCardDto> deck = new();
 
@@ -130,29 +137,17 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 deck.EnqueueFront(datas[randomIndex]);
             }
 
-            //for (int i = 0; i < count; i++)
-            //{
-            //    //RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(0, cardTypeCount);
-            //    RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(0, 1);
-            //    //RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(3, 4);
-
-            //    cardDeck.EnqueueFront(randomCard);
-            //}
-
             return deck;
         }
 
         private void OnRhythmCardSelect(UI_RhythmCard card)
         {
             m_CardSelectQueue.Enqueue(card);
-            //SelectedRhythmCard = card;
         }
 
         private void OnRhythmCardDeselect(UI_RhythmCard card)
         {
             m_CardSelectQueue = new Queue<UI_RhythmCard>(m_CardSelectQueue.Where(x => x != card));
-
-            //SelectedRhythmCard = null;
         }
 
         private void OnRhythmCardUse(UI_RhythmCard card)

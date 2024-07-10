@@ -1,3 +1,4 @@
+using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Manager;
 using UnityEngine;
 
@@ -7,11 +8,14 @@ namespace DarkChocoSoft.RhythmCardGame.UI
     {
         [SerializeField] RhythmManager RhythmManager;
 
+        public void StartRhythm(RhythmNoteDto[] datas)
+        { 
+            RhythmManager.StartRhythm(datas);
+        }
+
         protected override void OnShow()
         {
             base.OnShow();
-
-            RhythmManager.StartRhythm();
         }
 
         protected override void OnHide()

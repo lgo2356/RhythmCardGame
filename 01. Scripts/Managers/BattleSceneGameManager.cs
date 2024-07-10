@@ -1,8 +1,10 @@
 using DarkChocoSoft.Module;
 using DarkChocoSoft.RhythmCardGame.Const;
+using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Module;
 using DarkChocoSoft.RhythmCardGame.UI;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame.Manager
@@ -138,10 +140,19 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         {
             yield return null;
 
-            RhythmCardModule.UseRhythmCards();
+            RhythmCardDto[] cardDatas = RhythmCardModule.UseRhythmCards();
+            List<RhythmNoteDto> noteDatas = new();
 
-            //TODO : 리듬 전투 페이즈 수정하기
-            //PopupManager.Instance.ShowPopup(PopupType.UI_RhythmPopup);
+            foreach (RhythmCardDto cardData in cardDatas)
+            {
+                foreach (RhythmNoteDto noteData in cardData.notes)
+                {
+                    noteDatas.Add(noteData);
+                }
+            }
+
+            UI_RhythmPopup rhythmPopup = PopupManager.Instance.ShowPopup(PopupType.UI_RhythmPopup) as UI_RhythmPopup;
+            rhythmPopup.StartRhythm(noteDatas.ToArray());
         }
 
         protected override void Awake()

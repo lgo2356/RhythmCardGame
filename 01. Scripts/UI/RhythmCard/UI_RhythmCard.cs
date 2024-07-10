@@ -21,12 +21,47 @@ namespace DarkChocoSoft.RhythmCardGame.UI
         Tween m_CurTween;
         TextMeshProUGUI m_NoteCountText;
         RhythmCardConfig m_Config;
-        RhythmCardData m_Data;
         float m_CardScale = 1f;
         bool m_IsSelected = false;
         Action<UI_RhythmCard> m_OnSelectedAction;
         Action<UI_RhythmCard> m_OnDeselectedAction;
         Action<UI_RhythmCard> m_OnUseAction;
+
+        public RhythmCardDto Data
+        {
+            get;
+            private set;
+        }
+
+        public void SetData(RhythmCardDto data)
+        {
+            Data = data;
+        }
+
+        public void SetConfig(ScriptableObject config)
+        {
+            RhythmCardConfig rhythmCardConfig = config as RhythmCardConfig;
+            m_BackgroundImage.color = rhythmCardConfig.BackgroundColor;
+            m_CardImage.sprite = rhythmCardConfig.CardSprite;
+            m_NoteCountText.text = Data.name;
+        }
+
+        public void LoadConfig(string path)
+        {
+            ResourceManager.Instance.LoadAsync<RhythmCardConfig>(path, (config) =>
+            {
+                m_Config = config;
+
+                SetConfig(config);
+            });
+        }
+
+        public void Use()
+        {
+            m_OnUseAction?.Invoke(this);
+
+            Destroy();
+        }
 
         public virtual void OnPointerClick(PointerEventData eventData)
         {
@@ -34,12 +69,10 @@ namespace DarkChocoSoft.RhythmCardGame.UI
 
             if (m_IsSelected)
             {
-                //BattleSceneGameManager.Instance.RhythmCardModule.DeselectAllCardExcept(this);
-
                 OnSelected();
             }
-            else 
-            { 
+            else
+            {
                 OnDeselected();
             }
         }
@@ -71,32 +104,9 @@ namespace DarkChocoSoft.RhythmCardGame.UI
                 .SetEase(Ease.InOutSine);
         }
 
-        public void SetConfig(ScriptableObject config)
-        {
-            RhythmCardConfig rhythmCardConfig = config as RhythmCardConfig;
-            m_BackgroundImage.color = rhythmCardConfig.BackgroundColor;
-            m_CardImage.sprite = rhythmCardConfig.CardSprite;
-        }
-
-        public void LoadConfig(string path)
-        {
-            ResourceManager.Instance.LoadAsync<RhythmCardConfig>(path, (config) =>
-            {
-                m_Config = config;
-
-                SetConfig(config);
-            });
-        }
-
-        public void Use()
-        {
-            m_OnUseAction?.Invoke(this);
-
-            Destroy();
-        }
-
         public void Destroy()
         {
+            Debug.Log("Card Destroy");
             Destroy(gameObject);
         }
 
