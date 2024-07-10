@@ -1,8 +1,6 @@
 using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
-using DarkChocoSoft.RhythmCardGame.UI;
-using System;
 using System.Collections;
 using System.IO;
 using UnityEditor;
@@ -22,7 +20,6 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         private Coroutine m_GenerateRhythmNoteCoroutine;
         private RhythmNoteFactory[] m_RhythmNoteFactories;
         private int m_NoteSpeed = 400;
-        private Action m_EndRhythmNoteDestroyAction;
 
         public Transform UICanvas
         {
