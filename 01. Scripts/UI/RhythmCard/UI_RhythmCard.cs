@@ -34,7 +34,7 @@ namespace DarkChocoSoft.RhythmCardGame.UI
 
             if (m_IsSelected)
             {
-                BattleSceneGameManager.Instance.RhythmCardModule.DeselectAllCardExcept(this);
+                //BattleSceneGameManager.Instance.RhythmCardModule.DeselectAllCardExcept(this);
 
                 OnSelected();
             }
@@ -76,7 +76,6 @@ namespace DarkChocoSoft.RhythmCardGame.UI
             RhythmCardConfig rhythmCardConfig = config as RhythmCardConfig;
             m_BackgroundImage.color = rhythmCardConfig.BackgroundColor;
             m_CardImage.sprite = rhythmCardConfig.CardSprite;
-            m_NoteCountText.text = "";
         }
 
         public void LoadConfig(string path)

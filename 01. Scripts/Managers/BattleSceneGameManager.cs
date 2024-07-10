@@ -106,12 +106,6 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         public void UseRhythmCard()
         {
-            if (RhythmCardModule.SelectedRhythmCard == null)
-            {
-                Debug.Log("선택된 카드가 없습니다.");
-                return;
-            }
-
             StartCoroutine(UseRhythmCardCoroutine());
         }
 
@@ -144,9 +138,10 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         {
             yield return null;
 
-            RhythmCardModule.UseRhythmCard(RhythmCardModule.SelectedRhythmCard);
+            RhythmCardModule.UseRhythmCards();
 
-            PopupManager.Instance.ShowPopup(PopupType.UI_RhythmPopup);
+            //TODO : 리듬 전투 페이즈 수정하기
+            //PopupManager.Instance.ShowPopup(PopupType.UI_RhythmPopup);
         }
 
         protected override void Awake()
@@ -163,15 +158,14 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         protected override void Start()
         {
+            string playerConfigPath = PlayerPrefs.GetString(PlayerPrefsKey.PlayerCharacterConfig, string.Empty);
+
             CharacterModule.SpawnPlayerCharacter(
-                SceneData.PlayerCharacterType,
-                SceneData.PlayerCharacterPrefab,
                 UIRoot.BattleField.PlayerPositionTransform.position,
-                UIRoot.BattleField.transform);
+                UIRoot.BattleField.transform,
+                playerConfigPath);
 
             CharacterModule.SpawnMonsterCharacter(
-                SceneData.MonsterCharacterType,
-                SceneData.MonsterCharacterPrefab,
                 UIRoot.BattleField.MonsterPositionTransform.position,
                 UIRoot.BattleField.transform);
 

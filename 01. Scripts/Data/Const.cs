@@ -41,5 +41,6 @@ namespace DarkChocoSoft.RhythmCardGame.Const
         public const string StageNumber = "StageNumber";
         public const string PlayerCharacterName = "PlayerCharacterName";
         public const string MonsterCharacterName = "MonsterCharacterName";
+        public const string PlayerCharacterConfig = "PlayerCharacterConfig";
     }
 }

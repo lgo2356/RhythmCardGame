@@ -13,9 +13,9 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         public void SaveData()
         {
-            PlayerPrefs.SetInt(PlayerPrefsKey.StageNumber, SelectedStageNumber);
+            //PlayerPrefs.SetInt(PlayerPrefsKey.StageNumber, SelectedStageNumber);
             PlayerPrefs.SetString(PlayerPrefsKey.PlayerCharacterName, SelectedCharacterType.ToString());
-            PlayerPrefs.SetString(PlayerPrefsKey.MonsterCharacterName, CharacterName.Cat.ToString());
+            //PlayerPrefs.SetString(PlayerPrefsKey.MonsterCharacterName, CharacterName.Cat.ToString());
             PlayerPrefs.Save();
         }
 

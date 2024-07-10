@@ -17,7 +17,7 @@ namespace DarkChocoSoft.RhythmCardGame
         public void Defend(Character attacker, int damage);
     }
 
-    public abstract class Character : MonoBehaviour, IAttackable, IDefenceable
+    public class Character : MonoBehaviour, IAttackable, IDefenceable
     {
         [SerializeField] protected Sprite CharacterSprite;
 
@@ -28,20 +28,25 @@ namespace DarkChocoSoft.RhythmCardGame
 
         public Stat Stat => m_Stat;
 
-        public abstract void Load();
+        public virtual void Load()
+        {
+
+        }
 
         public void SetConfig(ScriptableObject config)
         {
-            CharacterSprite = (config as CharacterConfig).CharacterSprite;
+            CharacterConfig characterConfig = config as CharacterConfig;
+
+            CharacterSprite = characterConfig.CharacterSprite;
             m_CharacterImage.sprite = CharacterSprite;
+
+            m_Stat.Init(characterConfig.MaxHp, characterConfig.AttackDamage);
         }
 
         public void LoadConfig(string path)
         {
-            ResourceManager.Instance.LoadAsync<CharacterConfig>(path, (config) =>
-            {
-                SetConfig(config);
-            });
+            CharacterConfig config = ResourceManager.Instance.LoadSync<CharacterConfig>(path);
+            SetConfig(config);
         }
 
         public void ConnectStatusPanel(UI_StatusPanel statusPanel)
@@ -77,7 +82,6 @@ namespace DarkChocoSoft.RhythmCardGame
 
             defender.Defend(this, damage);
         }
-        
 
         protected virtual void Awake()
         {

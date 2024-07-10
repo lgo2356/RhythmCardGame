@@ -1,11 +1,11 @@
 using DarkChocoSoft.Algorithm.DataStructure;
 using DarkChocoSoft.Exception;
-using DarkChocoSoft.RhythmCardGame.Const;
-using DarkChocoSoft.RhythmCardGame.Interface;
+using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Module;
 using DarkChocoSoft.RhythmCardGame.UI;
-using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,12 +13,14 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 {
     public class RhythmCardManager : MonoBehaviour
     {
+        [SerializeField] private GameObject m_RhythmCardPrefab;
+
         private const string MANAGER_NAME = "[ RhythmCardManager ]";
 
         private GameObject m_CardPanel;
-        private RhythmCardFactory[] m_CardFactories;
-        private Deque<RhythmCardType> m_CardDeck;
+        private Deque<RhythmCardDto> m_Deck;
         private List<UI_RhythmCard> m_CardHand = new();
+        private Queue<UI_RhythmCard> m_CardSelectQueue = new();
 
         public GameObject CardPanel
         {
@@ -45,11 +47,16 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             {
                 try
                 {
-                    RhythmCardType cardType = m_CardDeck.DequeueFront();
-                    IRhythmCard character = m_CardFactories[(int)cardType].GetRhythmCard(Vector2.zero, CardPanel.transform);
-                    UI_RhythmCard card = character as UI_RhythmCard;
-                    card.SetOnSelectedListener(OnRhythmCardSelected);
-                    card.SetOnDeselectedListener(OnRhythmCardDeselected);
+                    RhythmCardDto cardData = m_Deck.DequeueFront();
+
+                    DefaultRhythmCardCreator creator = gameObject.GetOrAddComponent<DefaultRhythmCardCreator>();
+                    creator.SetPositionAndParent(Vector2.zero, CardPanel.transform);
+                    creator.SetConfig(cardData.config_path);
+                    creator.SetPrefab(m_RhythmCardPrefab);
+
+                    UI_RhythmCard card = creator.Get();
+                    card.SetOnSelectedListener(OnRhythmCardSelect);
+                    card.SetOnDeselectedListener(OnRhythmCardDeselect);
                     card.SetOnUseListener(OnRhythmCardUse);
 
                     m_CardHand.Add(card);
@@ -59,6 +66,20 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                     //TODO: 뽑을 카드가 없으면 GameOver 처리
                     Debug.LogError("뽑을 카드가 없습니다.");
                 }
+            }
+        }
+
+        public void UseRhythmCards()
+        {
+            if (m_CardSelectQueue == null || m_CardSelectQueue.Count == 0)
+            {
+                Debug.Log("선택된 카드가 없습니다.");
+                return;
+            }
+
+            while (m_CardSelectQueue.TryDequeue(out var card))
+            {
+                UseRhythmCard(card);
             }
         }
 
@@ -91,46 +112,47 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
-        private void InitCardFactory()
-        {
-            m_CardFactories = new RhythmCardFactory[Enum.GetValues(typeof(RhythmCardType)).Length];
-
-            m_CardFactories[0] = gameObject.GetOrAddComponent<SingleRhythmCardFactory>();
-            m_CardFactories[1] = gameObject.GetOrAddComponent<DoubleRhythmCardFactory>();
-            m_CardFactories[2] = gameObject.GetOrAddComponent<TripleRhythmCardFactory>();
-            m_CardFactories[3] = gameObject.GetOrAddComponent<LongRhythmCardFactory>();
-        }
-
         private void InitCardDeck()
         {
-            m_CardDeck = GenerateCardDeck(40);
+            m_Deck = GenerateCardDeck(40);
         }
 
-        private Deque<RhythmCardType> GenerateCardDeck(int count)
+        private Deque<RhythmCardDto> GenerateCardDeck(int count)
         {
-            Deque<RhythmCardType> cardDeck = new();
-            int cardTypeCount = Enum.GetValues(typeof(RhythmCardType)).Length;
+            //Deque<RhythmCardType> cardDeck = new();
+            RhythmCardDto[] datas = LoadRhythmCardDto();
+            Deque<RhythmCardDto> deck = new();
 
             for (int i = 0; i < count; i++)
             {
-                //RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(0, cardTypeCount);
-                RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(0, 1);
-                //RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(3, 4);
+                int randomIndex = UnityEngine.Random.Range(0, datas.Length);
 
-                cardDeck.EnqueueFront(randomCard);
+                deck.EnqueueFront(datas[randomIndex]);
             }
 
-            return cardDeck;
+            //for (int i = 0; i < count; i++)
+            //{
+            //    //RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(0, cardTypeCount);
+            //    RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(0, 1);
+            //    //RhythmCardType randomCard = (RhythmCardType)UnityEngine.Random.Range(3, 4);
+
+            //    cardDeck.EnqueueFront(randomCard);
+            //}
+
+            return deck;
         }
 
-        private void OnRhythmCardSelected(UI_RhythmCard card)
+        private void OnRhythmCardSelect(UI_RhythmCard card)
         {
-            SelectedRhythmCard = card;
+            m_CardSelectQueue.Enqueue(card);
+            //SelectedRhythmCard = card;
         }
 
-        private void OnRhythmCardDeselected(UI_RhythmCard card)
+        private void OnRhythmCardDeselect(UI_RhythmCard card)
         {
-            SelectedRhythmCard = null;
+            m_CardSelectQueue = new Queue<UI_RhythmCard>(m_CardSelectQueue.Where(x => x != card));
+
+            //SelectedRhythmCard = null;
         }
 
         private void OnRhythmCardUse(UI_RhythmCard card)
@@ -138,9 +160,27 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
         }
 
+        private RhythmCardDto[] LoadRhythmCardDto()
+        {
+            string path = Application.dataPath + "/01. Scripts/Data/Local/Json/Local_RhythmCardData.json";
+
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+                RhythmCardDto[] datas = JsonUtility.FromJson<RhythmCardDtos>(json).datas;
+
+                return datas;
+            }
+            else
+            {
+                Debug.LogError("File not found");
+            }
+
+            return null;
+        }
+
         private void Awake()
         {
-            InitCardFactory();
             InitCardDeck();
         }
 

@@ -14,8 +14,8 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
     {
         private Button m_TurnButton;
         private Button m_CardButton;
-        private PlayerCharacter m_Player;
-        private MonsterCharacter m_Monster;
+        private Character m_Player;
+        private Character m_Monster;
 
         public bool IsPlayerTurn 
         { 
@@ -35,7 +35,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             m_CardButton = cardButton;
         }
 
-        public void InjectCharacter(PlayerCharacter player, MonsterCharacter monster)
+        public void InjectCharacter(Character player, Character monster)
         {
             if (player == null)
                 throw new System.Exception("플레이어가 없습니다.");

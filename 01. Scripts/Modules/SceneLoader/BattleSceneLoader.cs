@@ -29,6 +29,20 @@ namespace DarkChocoSoft.RhythmCardGame.Module
             };
         }
 
+        public BattleSceneLoader SetPrefsData(string key, string value)
+        {
+            PlayerPrefs.SetString(key, value);
+
+            return this;
+        }
+
+        public BattleSceneLoader SetPrefsData(string key, int value)
+        {
+            PlayerPrefs.SetInt(key, value);
+
+            return this;
+        }
+
         public IEnumerator LoadSceneAsyncCoroutine(string sceneName)
         {
             AsyncOperation asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName);
@@ -40,10 +54,33 @@ namespace DarkChocoSoft.RhythmCardGame.Module
                 PlayerCharacterType = (CharacterName)Enum.Parse(
                     typeof(CharacterName), 
                     PlayerPrefs.GetString(PlayerPrefsKey.PlayerCharacterName, string.Empty)),
-                MonsterCharacterType = (CharacterName)Enum.Parse(
-                    typeof(CharacterName),
-                    PlayerPrefs.GetString(PlayerPrefsKey.MonsterCharacterName, string.Empty)),
+                //MonsterCharacterType = (CharacterName)Enum.Parse(
+                //    typeof(CharacterName),
+                //    PlayerPrefs.GetString(PlayerPrefsKey.MonsterCharacterName, string.Empty)),
             };
+
+            CharacterName playerCharacterName = (CharacterName)Enum.Parse(typeof(CharacterName), PlayerPrefs.GetString(PlayerPrefsKey.PlayerCharacterName, string.Empty));
+
+            switch (playerCharacterName)
+            {
+                case CharacterName.Slime:
+                    {
+                        PlayerPrefs.SetString(PlayerPrefsKey.PlayerCharacterConfig, "Assets/05. Data/Character/SlimeCharacterConfig.asset");
+                    }
+                    break;
+
+                case CharacterName.Pink:
+                    {
+                        PlayerPrefs.SetString(PlayerPrefsKey.PlayerCharacterConfig, "Assets/05. Data/Character/PinkCharacterConfig.asset");
+                    }
+                    break;
+
+                case CharacterName.Grape:
+                    {
+                        PlayerPrefs.SetString(PlayerPrefsKey.PlayerCharacterConfig, "Assets/05. Data/Character/GrapeCharacterConfig.asset");
+                    }
+                    break;
+            }
 
             BattleSceneDataLoader dataLoader = new();
             dataLoader
