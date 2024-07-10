@@ -1,8 +1,9 @@
 using DarkChocoSoft.RhythmCardGame.Data;
 using DarkChocoSoft.RhythmCardGame.Interface;
 using DarkChocoSoft.RhythmCardGame.Module;
+using DarkChocoSoft.RhythmCardGame.UI;
+using System;
 using System.Collections;
-using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,15 +12,17 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
     public class RhythmManager : MonoBehaviour
     {
         [SerializeField] EndRhythmObject m_EndRhythmNotePrefab;
+        [SerializeField] GameObject m_RhythmNotePrefab;
         [SerializeField] RectTransform m_RhythmNoteStartPositionTransform;
         [SerializeField] RhythmNoteHitTimingManager m_RhythmNoteHitTimingManager;
 
         public int BPM = 120;
+        public int NoteSpeed = 400;
 
         private Transform m_UICanvas;
         private Coroutine m_GenerateRhythmNoteCoroutine;
-        private RhythmNoteFactory[] m_RhythmNoteFactories;
-        private int m_NoteSpeed = 400;
+        private Action m_OnRhythmStartAction;
+        private Action m_OnRhythmStopAction;
 
         public Transform UICanvas
         {
@@ -34,22 +37,15 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
-        public int NoteSpeed
-        {
-            get
-            {
-                return m_NoteSpeed;
-            }
-
-            private set
-            {
-                m_NoteSpeed = value;
-            }
-        }
-
         public void StartRhythm(RhythmNoteDto[] rhythmDatas)
         {
-            m_GenerateRhythmNoteCoroutine = StartCoroutine(BeatCoroutine(rhythmDatas));
+            UI_RhythmPopup popup = PopupManager.Instance.GetPopup<UI_RhythmPopup>(PopupType.UI_RhythmPopup);
+
+            popup.SetOnShowListener(() =>
+            {
+                m_GenerateRhythmNoteCoroutine = StartCoroutine(BeatCoroutine(rhythmDatas, popup));
+            });
+            popup.Show();
         }
 
         public void StopRhythm()
@@ -62,20 +58,29 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 PopupManager.Instance.HidePopup(PopupType.UI_RhythmPopup);
             }
 
-            float ratio = m_RhythmNoteHitTimingManager.HitRatio / 100f;
-            BattleSceneGameManager.Instance.DoBattle(ratio);
+            //float ratio = m_RhythmNoteHitTimingManager.HitRatio / 100f;
+
+            m_OnRhythmStopAction?.Invoke();
+
+            //BattleSceneGameManager.Instance.DoBattle(ratio);
+            BattleSceneGameManager.Instance.DoBattle(1f);
         }
 
-        public void StartTestRhythm()
+        public void SetOnRhythmStartListener(Action callback)
         {
-            //BeatData beatData = GetTestBeat();
-
-            //m_GenerateRhythmNoteCoroutine = StartCoroutine(BeatCoroutine(beatData));
+            m_OnRhythmStartAction -= callback;
+            m_OnRhythmStartAction += callback;
         }
 
-        private IEnumerator BeatCoroutine(RhythmNoteDto[] notes)
+        public void SetOnRhythmStopListener(Action callback)
         {
-            Vector2 noteStartPosition = m_RhythmNoteStartPositionTransform.position;
+            m_OnRhythmStopAction -= callback;
+            m_OnRhythmStopAction += callback;
+        }
+
+        private IEnumerator BeatCoroutine(RhythmNoteDto[] notes, UI_RhythmPopup popup)
+        {
+            m_OnRhythmStartAction?.Invoke();
 
             double timer = 0d;
             double tempo = 60d / BPM;
@@ -99,8 +104,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                             {
                                 noteData.NoteCount = notes[i].count;
 
-                                RhythmNoteFactory factory = m_RhythmNoteFactories[0];
-                                factory.GenerateRhythmNote(tempo, noteData, noteStartPosition, UICanvas);
+                                StartCoroutine(GenerateNoteCoroutine(notes[i], tempo, popup));
                             }
                             break;
 
@@ -117,28 +121,41 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
 
             yield return new WaitForSeconds(0.5f);
 
-            Debug.Log($"Beat End ratio : {m_RhythmNoteHitTimingManager.HitRatio}");
+            //Debug.Log($"Beat End ratio : {m_RhythmNoteHitTimingManager.HitRatio}");
 
             EndRhythmObject endRhythmNote = Instantiate(m_EndRhythmNotePrefab, UICanvas);
-            endRhythmNote.transform.position = noteStartPosition;
+            endRhythmNote.transform.position = new Vector2(25f, 1110f);
             endRhythmNote.Speed = noteData.Speed;
             endRhythmNote.SetOnDestroyListener(OnEndRhythmObjectDestory);
             endRhythmNote.StartMove();
         }
 
-        private void InitFactory()
+        private IEnumerator GenerateNoteCoroutine(RhythmNoteDto noteData, double tempo, UI_RhythmPopup popup)
         {
-            m_RhythmNoteFactories = new RhythmNoteFactory[4];
+            double timer = tempo;
+            int tempoValue = noteData.count;
 
-            m_RhythmNoteFactories[0] = gameObject.GetOrAddComponent<NormalRhythmNoteFactory>();
-            m_RhythmNoteFactories[0].Init();
+            while (noteData.count > 0)
+            {
+                timer += Time.deltaTime * tempoValue;
 
-            m_RhythmNoteFactories[1] = gameObject.GetOrAddComponent<LongRhythmNoteFactory>();
-            m_RhythmNoteFactories[1].Init();
+                if (timer >= tempo)
+                {
+                    DefaultRhythmNoteCreator creator = gameObject.GetOrAddComponent<DefaultRhythmNoteCreator>();
+                    creator.SetPrefab(m_RhythmNotePrefab);
+                    creator.SetData(noteData);
 
-            //m_RhythmNoteFactories[2] = gameObject.GetOrAddComponent<RhythmPivotFactory>();
+                    RhythmNote note = creator.Get();
+                    note.StartMove(NoteSpeed);
 
-            //TODO : 각 팩토리에 필요한 데이터 주입하기
+                    popup.InjectNote(note);
+
+                    timer -= tempo;
+                    noteData.count--;
+                }
+
+                yield return null;
+            }
         }
 
         private void OnEndRhythmObjectDestory()
@@ -146,47 +163,14 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             StopRhythm();
         }
 
-        void Awake()
+        private void OnRhythmPopupShow()
         {
-            InitFactory();
+            
         }
 
-        private BeatData GetDummyBeat()
+        private void OnRhythmPopupHide()
         {
-            string path = Application.dataPath + "/01. Scripts/Data/DummyBeatJson.json";
 
-            if (File.Exists(path))
-            {
-                string json = File.ReadAllText(path);
-                BeatData data = JsonUtility.FromJson<BeatData>(json);
-
-                return data;
-            }
-            else
-            {
-                Debug.LogError("File not found");
-            }
-
-            return null;
-        }
-
-        private BeatData GetTestBeat()
-        {
-            string path = Application.dataPath + "/01. Scripts/Data/TestBeatJson.json";
-
-            if (File.Exists(path))
-            {
-                string json = File.ReadAllText(path);
-                BeatData data = JsonUtility.FromJson<BeatData>(json);
-
-                return data;
-            }
-            else
-            {
-                Debug.LogError("File not found");
-            }
-
-            return null;
         }
 
 #if UNITY_EDITOR

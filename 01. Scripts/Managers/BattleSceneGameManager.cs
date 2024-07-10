@@ -31,6 +31,7 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
         private CharacterManager m_CharacterModule;
         private BattleManager m_BattleModule;
         private RhythmCardManager m_RhythmCardModule;
+        private RhythmManager m_RhythmManager;
 
         public UI_BattleSceneRoot UIRoot
         {
@@ -96,6 +97,20 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
             }
         }
 
+        public RhythmManager RhythmManager 
+        {
+            get
+            {
+                if (m_RhythmManager == null)
+                {
+                    m_RhythmManager = gameObject.GetOrAddComponent<RhythmManager>();
+                    // 리스너 초기화
+                }
+
+                return m_RhythmManager;
+            }
+        }
+
         public BattleSceneData SceneData
         {
             get; private set;
@@ -151,8 +166,20 @@ namespace DarkChocoSoft.RhythmCardGame.Manager
                 }
             }
 
-            UI_RhythmPopup rhythmPopup = PopupManager.Instance.ShowPopup(PopupType.UI_RhythmPopup) as UI_RhythmPopup;
-            rhythmPopup.StartRhythm(noteDatas.ToArray());
+            RhythmManager.StartRhythm(noteDatas.ToArray());
+
+            //UI_RhythmPopup rhythmPopup = PopupManager.Instance.ShowPopup(PopupType.UI_RhythmPopup) as UI_RhythmPopup;
+            //rhythmPopup.StartRhythm(noteDatas.ToArray());
+        }
+
+        private void OnRhythmStart()
+        {
+
+        }
+
+        private void OnRhythmStop()
+        {
+
         }
 
         protected override void Awake()

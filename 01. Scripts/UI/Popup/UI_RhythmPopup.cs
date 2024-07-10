@@ -6,11 +6,12 @@ namespace DarkChocoSoft.RhythmCardGame.UI
 {
     public class UI_RhythmPopup : UI_Popup
     {
-        [SerializeField] RhythmManager RhythmManager;
+        [SerializeField] private RectTransform m_tfNoteStartPosition;
 
-        public void StartRhythm(RhythmNoteDto[] datas)
-        { 
-            RhythmManager.StartRhythm(datas);
+        public void InjectNote(RhythmNote note)
+        {
+            note.transform.SetParent(transform);
+            note.transform.position = m_tfNoteStartPosition.position;
         }
 
         protected override void OnShow()

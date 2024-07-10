@@ -2134,6 +2134,7 @@ GameObject:
   - component: {fileID: 1593718555}
   - component: {fileID: 1593718554}
   - component: {fileID: 1593718553}
+  - component: {fileID: 1593718556}
   m_Layer: 0
   m_Name: '[ GameManager ]'
   m_TagString: Untagged
@@ -2207,6 +2208,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b63cb02c0aa8eaf429e89f2d8c9e2449, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1593718556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593718550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38c1e2ca2d5abd1438d801f069c113c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EndRhythmNotePrefab: {fileID: 5300244329658547539, guid: 91eedffbfd51cdd4ea550dabcfae3194, type: 3}
+  m_RhythmNotePrefab: {fileID: 4271660016964715561, guid: b1534db02d254184db7c4ea3ab24a5a5, type: 3}
+  m_RhythmNoteStartPositionTransform: {fileID: 0}
+  m_RhythmNoteHitTimingManager: {fileID: 0}
+  BPM: 120
+  NoteSpeed: 400
 --- !u!1 &1594100365
 GameObject:
   m_ObjectHideFlags: 0

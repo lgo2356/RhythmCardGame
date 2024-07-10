@@ -1,4 +1,3 @@
-using DarkChocoSoft.RhythmCardGame.Manager;
 using System;
 using UnityEngine;
 
@@ -30,11 +29,13 @@ namespace DarkChocoSoft.RhythmCardGame.UI
 
         public void SetOnShowListener(Action callback)
         {
+            OnShowAction -= callback;
             OnShowAction += callback;
         }
 
         public void SetOnHideListener(Action callback)
         {
+            OnHideAction -= callback;
             OnHideAction += callback;
         }
 

@@ -1,34 +1,29 @@
-using DarkChocoSoft.RhythmCardGame.Interface;
+using DarkChocoSoft.RhythmCardGame.Data;
 using System;
 using System.Collections;
 using UnityEngine;
 
 namespace DarkChocoSoft.RhythmCardGame
 {
-    public abstract class RhythmNote : MonoBehaviour, IRhythmNote
+    public abstract class RhythmNote : MonoBehaviour
     {
-        protected RhythmNoteData m_Data;
+        protected RhythmNoteDto m_Data;
         protected Action<RhythmNote> m_OnDestroyAction;
         protected Coroutine m_MoveCoroutine;
 
-        public void InitRhythmNote(RhythmNoteData data)
+        public void SetData(RhythmNoteDto data)
         {
             m_Data = data;
         }
 
-        public void SetConfig(ScriptableObject config)
-        { 
-            //Config = config as RhythmNoteConfig;
-        }
-
-        public void StartMove()
+        public void StartMove(int speed)
         {
             if (m_MoveCoroutine != null)
             {
                 StopCoroutine(m_MoveCoroutine);
             }
 
-            m_MoveCoroutine = StartCoroutine(MoveCoroutine());
+            m_MoveCoroutine = StartCoroutine(MoveCoroutine(speed));
         }
 
         public void SetOnDestroyListener(Action<RhythmNote> callback)
@@ -47,11 +42,11 @@ namespace DarkChocoSoft.RhythmCardGame
             m_OnDestroyAction?.Invoke(this);
         }
 
-        private IEnumerator MoveCoroutine()
+        private IEnumerator MoveCoroutine(int speed)
         {
             while (true)
             {
-                transform.localPosition += Vector3.right * m_Data.Speed * Time.deltaTime;
+                transform.localPosition += Vector3.right * speed * Time.deltaTime;
 
                 yield return null;
             }
